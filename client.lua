@@ -11,18 +11,6 @@ local interiorHash4 = GetInteriorAtCoordsWithType(963.7479,3632.5056,25.761,"int
 
 --         RefreshInterior(BikerCounterfeit.interiorId)
 -- end)
-Citizen.CreateThread(function()
-    RefreshInterior(interiorHash4)
-    EnableInteriorProp(interiorHash4, "light_stock")
-    EnableInteriorProp(interiorHash4, "meth_app")
-    EnableInteriorProp(interiorHash4, "meth_staff_01")
-    EnableInteriorProp(interiorHash4, "meth_staff_02")
-    EnableInteriorProp(interiorHash4, "meth_update_lab_01")
-    EnableInteriorProp(interiorHash4, "meth_update_lab_02")
-    EnableInteriorProp(interiorHash4, "meth_update_lab_01_2")
-    EnableInteriorProp(interiorHash4, "meth_update_lab_02_2")
-    EnableInteriorProp(interiorHash4, "meth_stock")
-end)
   --target zones
 exports.ox_target:addBoxZone({
     coords = vec3(442.5363, -1017.666, 28.85637),
