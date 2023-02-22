@@ -1,17 +1,29 @@
 --setup
 local ox_inventory = exports.ox_inventory
+local interiorHash4 = GetInteriorAtCoordsWithType(963.7479,3632.5056,25.761,"int_stock")
 
+-- Citizen.CreateThread(function()
+--     BikerMethLab = exports['bob74_ipl']:GetBikerMethLabObject()
+--         BikerCounterfeit.Ipl.Interior.Load()
+--         BikerMethLab.Style.Set(BikerMethLab.Style.basic)
+--         BikerMethLab.Security.Set(BikerMethLab.Security.none)
+--         BikerMethLab.Details.Enable(BikerMethLab.Details.production, true)
+
+--         RefreshInterior(BikerCounterfeit.interiorId)
+-- end)
 Citizen.CreateThread(function()
-    BikerMethLab = exports['bob74_ipl']:GetBikerMethLabObject()
-        BikerCounterfeit.Ipl.Interior.Load()
-        BikerMethLab.Style.Set(BikerMethLab.Style.basic)
-        BikerMethLab.Security.Set(BikerMethLab.Security.none)
-        BikerMethLab.Details.Enable(BikerMethLab.Details.production, true)
-
-        RefreshInterior(BikerCounterfeit.interiorId)
+    RefreshInterior(interiorHash4)
+    EnableInteriorProp(interiorHash4, "light_stock")
+    EnableInteriorProp(interiorHash4, "meth_app")
+    EnableInteriorProp(interiorHash4, "meth_staff_01")
+    EnableInteriorProp(interiorHash4, "meth_staff_02")
+    EnableInteriorProp(interiorHash4, "meth_update_lab_01")
+    EnableInteriorProp(interiorHash4, "meth_update_lab_02")
+    EnableInteriorProp(interiorHash4, "meth_update_lab_01_2")
+    EnableInteriorProp(interiorHash4, "meth_update_lab_02_2")
+    EnableInteriorProp(interiorHash4, "meth_stock")
 end)
---target zones
--- targets
+  --target zones
 exports.ox_target:addBoxZone({
     coords = vec3(442.5363, -1017.666, 28.85637),
     size = vec3(2, 2, 2),
@@ -72,20 +84,21 @@ exports.ox_target:addBoxZone({
     }
 })
 
--- notifications
+ -- notifications
 RegisterNetEvent("sharkmeth:notify", function(type)
     local notification = {
         ['prepfail'] = lib.notify({title = 'Equipment Prepped', description = 'The equipment is already prepared.', type = 'error'}),
-        ['prepsuccess'] = lib.notify({title = 'Equipment Ready', description = 'The equipment is ready to cook.', type = 'success'}),
-        ['cookfail'] = lib.notify({title = 'Missing Ingrediants', description = 'Your missing an ingrediant.', type = 'error'}),
+        ['prepfail2'] = lib.notify({title = 'Equipment Prepped', description = 'Prep failed.', type = 'error'}),
+        ['prepsuccess'] = lib.notify({title = 'Equipment Ready', description = 'Ready to cook.', type = 'success'}),
+        ['cookfail'] = lib.notify({title = 'Missing Ingrediants', description = 'Your missing something.', type = 'error'}),
         ['cooksuccess'] = lib.notify({title = 'Cook Complete', description = 'Meth is ready to collect.', type = 'success'}),
-        ['smashfail1'] = lib.notify({title = 'Nothing to break', description = 'You need something to smash.', type = 'error'}),
-        ['smashfail2'] = lib.notify({title = 'Nothing to break', description = 'You need something to smash with.', type = 'error'}),
+        ['smashfail1'] = lib.notify({title = 'Can\t break', description = 'You need something to smash.', type = 'error'}),
+        ['smashfail2'] = lib.notify({title = 'Can\'t break', description = 'You need something to smash with.', type = 'error'}),
     }
     return notification[type]
 end
 )
---Cooking meth
+ --Cooking meth
 RegisterNetEvent("sharkmeth:cook")
 AddEventHandler("sharkmeth:cook", function()
     local animDict, animName = "anim@amb@business@meth@meth_monitoring_cooking@cooking@", "chemical_pour_long_cooker"

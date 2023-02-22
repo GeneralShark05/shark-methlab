@@ -1,5 +1,5 @@
 --prep
-local PrepCook = false
+PrepCook = false
 local Cooked = false
 local ox_inventory = exports.ox_inventory
 
@@ -8,8 +8,14 @@ RegisterServerEvent('sharkmeth:prepcook')
 AddEventHandler('sharkmeth:prepcook', function()
     local src = source
     if PrepCook == false then
-        PrepCook = true
-        return TriggerClientEvent('sharkmeth:notify', src, 'prepsuccess')
+        TriggerClientEvent('ultra-voltlab', 45, function(outcome ,reason)
+                if outcome == 1 then
+                    TriggerClientEvent('sharkmeth:notify', 'prepsucess')
+                    PrepCook = true
+                else
+                TriggerClientEvent('sharkmeth:notify', 'prepfail2')
+                end
+            end)
     else
         return TriggerClientEvent('sharkmeth:notify', src, 'prepfail')
     end
@@ -55,5 +61,9 @@ AddEventHandler('sharkmeth:smash', function()
         ox_inventory:RemoveItem(src, 'methpure', 1)
         ox_inventory:RemoveItem(src, 'plasticwrap', 1)
         ox_inventory:AddItem(src, 'methbrick', 1)
+    elseif items.methpure >= 1 and items.plasticwrap >= 1 then
+        TriggerClientEvent('sharkmeth:notify', src, 'smashfail1')
+    elseif items and items.hammer <= 0 then
+        TriggerClientEvent("sharkmeth:notify", src, 'smashfail2')
     end
 end)

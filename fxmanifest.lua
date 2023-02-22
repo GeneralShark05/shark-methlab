@@ -6,7 +6,7 @@ author 'Shark'
 description 'fuck around find out'
 version '0.0.1'
 
-dependencies { 'bob74_ipl', 'ox_lib', 'ox_target', 'ox_inventory' }
+dependencies { 'ox_lib', 'ox_target', 'ox_inventory', 'ultra-voltlab' }
 
 shared_script '@ox_lib/init.lua'
 
