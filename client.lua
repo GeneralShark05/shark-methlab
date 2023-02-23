@@ -1,7 +1,5 @@
 --setup
 local ox_inventory = exports.ox_inventory
-local interiorHash4 = GetInteriorAtCoordsWithType(963.7479,3632.5056,25.761,"int_stock")
-
 -- Citizen.CreateThread(function()
 --     BikerMethLab = exports['bob74_ipl']:GetBikerMethLabObject()
 --         BikerCounterfeit.Ipl.Interior.Load()

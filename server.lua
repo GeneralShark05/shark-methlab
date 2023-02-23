@@ -67,3 +67,6 @@ AddEventHandler('sharkmeth:smash', function()
         TriggerClientEvent("sharkmeth:notify", src, 'smashfail2')
     end
 end)
+
+
+--costas a fucktard
