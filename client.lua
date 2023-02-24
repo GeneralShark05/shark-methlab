@@ -1,15 +1,7 @@
 --setup
 local ox_inventory = exports.ox_inventory
--- Citizen.CreateThread(function()
---     BikerMethLab = exports['bob74_ipl']:GetBikerMethLabObject()
---         BikerCounterfeit.Ipl.Interior.Load()
---         BikerMethLab.Style.Set(BikerMethLab.Style.basic)
---         BikerMethLab.Security.Set(BikerMethLab.Security.none)
---         BikerMethLab.Details.Enable(BikerMethLab.Details.production, true)
 
---         RefreshInterior(BikerCounterfeit.interiorId)
--- end)
-  --target zones
+-- ox target
 exports.ox_target:addBoxZone({
     coords = vec3(595.1400, -420.8869, 18.1),
     size = vec3(1, 1, 1),
@@ -23,10 +15,10 @@ exports.ox_target:addBoxZone({
                     if result == 1 then
                         Citizen.Wait(2000)
                         TriggerEvent('sharkmeth:notify', 'prepsuccess')
-                        TriggerServerEvent('sharkmeth:prepcook')
+                        TriggerServerEvent('sharkmeth:localset', 1)
                     else
                         Citizen.Wait(2000)
-                        TriggerEvent('sharkmeth:notify', 'prepfail2')
+                        TriggerEvent('sharkmeth:notify', 'prepfail')
                     end
             end) end,
             icon = 'fa-solid fa-clipboard',
@@ -42,10 +34,22 @@ exports.ox_target:addBoxZone({
     debug = drawZones,
     options = {
         {
-            name = 'ox:option1',
-            onSelect = function() TriggerServerEvent('sharkmeth:startcook')end,
-            icon = 'fa-solid fa-kitchen-set',
-            label = 'Start Cooking',
+         name = 'ox:option1',
+         onSelect = function() TriggerServerEvent('sharkmeth:extractsudo') end,
+         icon = 'fa-solid fa-vial',
+         label = 'Extract Sudoepherine',
+        },
+        {
+            name = 'ox:option2',
+            onSelect = function() TriggerServerEvent('sharkmeth:extractphos') end,
+            icon = 'fa-solid fa-flask',
+            label = 'Extract Phosphorus',
+           },
+        {
+            name = 'ox:option3',
+            onSelect = function() TriggerServerEvent('sharkmeth:cookmeth')end,
+            icon = 'fa-solid flask-vial',
+            label = 'Cook Crystal Meth',
         }
     }
 })
@@ -74,22 +78,38 @@ exports.ox_target:addBoxZone({
         {
             name = 'ox:option1',
             onSelect = function() TriggerServerEvent('sharkmeth:collect') end,
-            icon = 'fa-solid fa-tablet-screen-button',
-            label = 'Collect Pure Meth',
+            icon = 'fa-solid fa-hard-drive',
+            label = 'Collect Product',
         } 
+    }
+})
+
+exports.ox_target:addBoxZone({
+    coords = vec3(596.2152, -415.6101, 17.6237),
+    size = vec3(1, 1, 1),
+    rotation = 45,
+    debug = drawZones,
+    options = {
+        {
+            name = 'ox:option1',
+            onSelect = function() TriggerServerEvent('sharkmeth:stealsulph')end,
+            icon = 'fa-solid fa-flask-round-potion',
+            label = 'Steal Sulphuric Acid',
+        }
     }
 })
 
  -- notifications
 RegisterNetEvent("sharkmeth:notify", function(type)
     local notification = {
-        ['prepfail2'] = {title = 'Equipment Not prepped', description = 'Prep failed, try again?.', type = 'error'},
+        ['prepfail'] = {title = 'Equipment Not Prepped', description = 'Prep failed, try again? Has the equipment already bene prepped?', type = 'error'},
         ['prepsuccess'] = {title = 'Equipment Ready', description = 'Ready to cook.', type = 'success'},
         ['cookfail'] = {title = 'Can\'t Cook', description = 'You\'re missing something, an ingredient? Is the equipment ready?', type = 'error'},
-        ['cooksuccess'] = {title = 'Cook Complete', description = 'Meth is ready to collect.', type = 'success'},
-        ['smashfail'] = {title = 'Can\'t break', description = 'You\'re missing something...', type = 'error'},
-    }
-    
+        ['cooksuccess'] = {title = 'Cook Complete', description = 'Your product is ready to collect.', type = 'success'},
+        ['smashfail'] = {title = 'Can\'t Break', description = 'You\'re missing something...', type = 'error'},
+        ['collecterror'] = {title = 'Can\'t Collect', description = 'Nothing to collect', type = 'error'},
+        ['stealfail'] = {title = 'Can\t Steal', description = '...You can\'t just carry sulphuric acid in your pocket', type = 'error'}
+    } 
     return lib.notify({title = notification[type].title, description = notification[type].description, type = notification[type].type})
 end
 )
@@ -125,7 +145,7 @@ AddEventHandler("sharkmeth:cook", function()
 
     local time = animDuration - 20000
     NetworkStartSynchronisedScene(netScene)
-    lib.progressBar({duration = (time), label = "Cooking Methamphetamine"})
+    lib.progressBar({duration = (time), label = "Cooking..."})
     NetworkStopSynchronisedScene(netScene)
     DeleteObject(sacid)
     DeleteObject(ammonia)
@@ -140,6 +160,7 @@ RegisterNetEvent("sharkmeth:smashy")
 AddEventHandler("sharkmeth:smashy", function()
     local ped = PlayerPedId()
     SetEntityCoords(ped, vector3(596.6482, -416.2458, 16.6237))
+    SetEntityHeading(ped,546)
     FreezeEntityPosition(ped, true)
     lib.progressBar({
         duration = 10000,
@@ -150,6 +171,30 @@ AddEventHandler("sharkmeth:smashy", function()
         },
         prop = {
             model = 'prop_tool_hammer',
+            pos = vec3(0.07, 0.05, 0.01),
+            rot = vec3(60.0, 0.0, 165.00),
+            bone = 6286,
+        },
+    })
+    FreezeEntityPosition(ped, false)
+end)
+
+--Smashing meth
+RegisterNetEvent("sharkmeth:stealy")
+AddEventHandler("sharkmeth:stealy", function()
+    local ped = PlayerPedId()
+    SetEntityCoords(ped, vector3(596.6482, -416.2458, 16.6237))
+    SetEntityHeading(ped,546)
+    FreezeEntityPosition(ped, true)
+    lib.progressBar({
+        duration = 10000,
+        label = 'Stealing Sulphuric Acid',
+        anim = {
+            dict = 'timetable@gardener@filling_can',
+            clip = 'gar_ig_5_filling_can'
+        },
+        prop = {
+            model = 'bkr_prop_meth_sacid',
             pos = vec3(0.07, 0.05, 0.01),
             rot = vec3(60.0, 0.0, 165.00),
             bone = 6286,

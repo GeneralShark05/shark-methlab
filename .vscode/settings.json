@@ -30,6 +30,8 @@
         "NetworkStartSynchronisedScene",
         "description",
         "RegisterNetEvent",
-        "TriggerServerEvent"
+        "TriggerServerEvent",
+        "EnableInteriorProp",
+        "GetInteriorAtCoordsWithType"
     ]
 }

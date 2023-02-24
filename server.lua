@@ -1,29 +1,79 @@
 --prep
-local PrepCook = false
-local Cooked = false
+local CookState
 local ox_inventory = exports.ox_inventory
 
-    --prepare lab
+--prepare lab
 RegisterServerEvent('sharkmeth:prepcook')
-AddEventHandler('sharkmeth:prepcook', function()
-    PrepCook = true
+AddEventHandler('sharkmeth:localset', function(type)
+    local source = src
+    if CookState >= type then
+        return TriggerClientEvent('sharkmeth:notify', src, 'prepfail')
+    else
+    CookState = type
+    end
 end
 )
 
---cook meth
-RegisterServerEvent('sharkmeth:startcook')
-AddEventHandler('sharkmeth:startcook', function()
+local drugs = {
+    ['2'] = {'sudo', 5},
+    ['3'] = {'phos', 4},
+    ['4'] = {'meth_pure', 10}
+}
+-- Status 0 = Not prepped, Status 1 = Prepped, Status 2 = Cooked Sudo, 3 = Cooked Phos, 4 = Cooked Meth
+
+-- cough meds, acetone, leadedgas to sudo --
+RegisterServerEvent('sharkmeth:extractsudo')
+AddEventHandler('sharkmeth:extractsudo', function()
     local src = source
-    local items = ox_inventory:Search(src, 'count', {'fertilizer', 'fueldrugs', 'coughmeds'})
-    if items and items.fertilizer > 2 and items.fueldrugs > 4 and items.coughmeds > 9 and PrepCook == true and Cooked == false then
+    local items = ox_inventory:Search(src, 'count', {'acetone', 'fueldrugs', 'coughmeds'})
+    if items and items.acetone > 2 and items.fueldrugs > 4 and items.coughmeds > 9 and CookState == 1 then
+        CookState = 0
         TriggerClientEvent("sharkmeth:cook", src)
-        ox_inventory:RemoveItem(src, 'fertilizer', 3)
+        ox_inventory:RemoveItem(src, 'acetone', 3)
         ox_inventory:RemoveItem(src, 'fueldrugs', 5)
         ox_inventory:RemoveItem(src, 'coughmeds', 10)
-
-        PrepCook = false
-        Cooked = true
+        Citizen.Wait(40000)
         TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
+        CookState = 2
+    else
+        return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+    end
+end
+)
+-- fertilizer, sulph, antifreeze to phos --
+RegisterServerEvent('sharkmeth:extractphos')
+AddEventHandler('sharkmeth:extractphos', function()
+    local src = source
+    local items = ox_inventory:Search(src, 'count', {'fertilizer', 'antifreeze', 'sulph'})
+    if items and items.fertilizer > 9 and items.antifreeze > 7 and items.sulph > 1 and CookState == 1 then
+        CookState = 0
+        TriggerClientEvent("sharkmeth:cook", src)
+        ox_inventory:RemoveItem(src, 'sulph', 2)
+        ox_inventory:RemoveItem(src, 'antifreeze', 8)
+        ox_inventory:RemoveItem(src, 'fertilizer', 10)
+        Citizen.Wait(40000)
+        TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
+        CookState = 3
+    else
+        return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+    end
+end
+)
+
+--sudo, phos, iodine to meth --
+RegisterServerEvent('sharkmeth:cookmeth')
+AddEventHandler('sharkmeth:cookmeth', function()
+    local src = source
+    local items = ox_inventory:Search(src, 'count', {'sudo', 'phos', 'iodine'})
+    if items and items.sudo > 3 and items.phos > 0 and items.iodine > 9 and CookState == 1 then
+        CookState = 0
+        TriggerClientEvent("sharkmeth:cook", src)
+        ox_inventory:RemoveItem(src, 'sudo', 4)
+        ox_inventory:RemoveItem(src, 'phos', 1)
+        ox_inventory:RemoveItem(src, 'iodine', 10)
+        Citizen.Wait(40000)
+        TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
+        CookState = 4
     else
         return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
     end
@@ -34,8 +84,12 @@ end
 RegisterServerEvent('sharkmeth:collect')
 AddEventHandler('sharkmeth:collect', function()
     local src = source
-    Cooked = false
-    return ox_inventory:AddItem(src, 'meth_pure', 5)
+    if CookState > 1 then
+        ox_inventory:AddItem(src, drugs[CookState])
+        CookState = 0
+    else
+        return TriggerClientEvent('sharkmeth:notify', src, 'collecterror')
+    end
 end
 )
 
@@ -44,7 +98,7 @@ RegisterServerEvent('sharkmeth:smash')
 AddEventHandler('sharkmeth:smash', function()
     local src = source
     local items = ox_inventory:Search(src, 'count', {'meth_pure', 'plasticwrap', 'WEAPON_HAMMER'})
-    if items and items.WEAPON_HAMMER >= 1 and items.meth_pure >= 1 and items.plasticwrap >= 1 then
+    if items and items.WEAPON_HAMMER > 0 and items.meth_pure > 0 and items.plasticwrap > 0 then
         TriggerClientEvent('sharkmeth:smashy', src)
         ox_inventory:RemoveItem(src, 'meth_pure', 1)
         ox_inventory:RemoveItem(src, 'plasticwrap', 1)
@@ -55,5 +109,19 @@ AddEventHandler('sharkmeth:smash', function()
     end
 end)
 
+--smash meth
+RegisterServerEvent('sharkmeth:stealsulph')
+AddEventHandler('sharkmeth:smash', function()
+    local src = source
+    local items = ox_inventory:Search(src, 'count', 'empty_container')
+    if items and items.empty_container > 0 then
+        TriggerClientEvent('sharkmeth:stealy', src)
+        Citizen.Wait(10000)
+        ox_inventory:RemoveItem(src, 'empty_container', 1)
+        ox_inventory:AddItem(src, 'sulph', 1)
+    else
+        TriggerClientEvent('sharkmeth:notify', src, 'stealfail')
+    end
+end)
 
 --costas a fucktard
