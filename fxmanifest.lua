@@ -1,6 +1,7 @@
 ---@diagnostic disable: undefined-global
 fx_version 'cerulean'
 games { 'gta5' }
+lua54 'yes'
 
 author 'Shark'
 description 'fuck around find out'
