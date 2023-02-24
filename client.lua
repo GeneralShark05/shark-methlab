@@ -1,7 +1,14 @@
 --setup
 local ox_inventory = exports.ox_inventory
 
+local labs = {
+    [1] = {CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196}, --+4.883, -1.957, 0.401
+    [2] = {CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196}, --+4.883, -1.957, 0.401
+    [3] = {CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196}, --+4.883, -1.957, 0.401
+}
 -- ox target
+
+-- INSIDE LAB INSIDE LAB \/\/
 exports.ox_target:addBoxZone({
     coords = vec3(595.1400, -420.8869, 18.1),
     size = vec3(1, 1, 1),
@@ -83,7 +90,7 @@ exports.ox_target:addBoxZone({
         } 
     }
 })
-
+-- INSIDE LAB INSIDE LAB ^^^^
 exports.ox_target:addBoxZone({
     coords = vec3(596.2152, -415.6101, 17.6237),
     size = vec3(1, 1, 1),
@@ -122,12 +129,12 @@ AddEventHandler("sharkmeth:cook", function()
         Citizen.Wait(10)
     end
     local ped = PlayerPedId()
-    SetEntityCoords(ped, vector3(593.4044, -426.5631, 18.1196))
+    SetEntityCoords(ped, vector3(labs[1].CookX, labs[1].CookY, labs[1].CookZ))
     Citizen.Wait(1)
     local targetPosition = GetEntityCoords(ped)
     local animDuration = GetAnimDuration(animDict, animName) * 1000
     FreezeEntityPosition(ped, true)
-    local scenePos, sceneRot = vector3(598.2874, -424.6061, 17.7186), vector3(0.0, 0.0, 0.0) -- 353200l
+    local scenePos, sceneRot = vector3((labs[1].CookX+4.883), (labs[1].CookY-1.957), (labs[1].CookZ+0.401)), vector3(0.0, 0.0, 0.0) -- 353200l
     local netScene = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(ped, netScene, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
     

@@ -1,7 +1,19 @@
 --prep
-local CookState
+local CookState = 0
 local ox_inventory = exports.ox_inventory
 
+local labs = {
+    [1] = {CookState = 0},
+    [2] = {CookState = 0},
+    [3] = {CookState = 0},
+}
+
+local drugs = {
+    [2] = {'sudo', 5},
+    [3] = {'phos', 4},
+    [4] = {'meth_pure', 10}
+}
+-- Status 0 = Not prepped, Status 1 = Prepped, Status 2 = Cooked Sudo, 3 = Cooked Phos, 4 = Cooked Meth
 --prepare lab
 RegisterServerEvent('sharkmeth:prepcook')
 AddEventHandler('sharkmeth:localset', function(type)
@@ -13,13 +25,6 @@ AddEventHandler('sharkmeth:localset', function(type)
     end
 end
 )
-
-local drugs = {
-    ['2'] = {'sudo', 5},
-    ['3'] = {'phos', 4},
-    ['4'] = {'meth_pure', 10}
-}
--- Status 0 = Not prepped, Status 1 = Prepped, Status 2 = Cooked Sudo, 3 = Cooked Phos, 4 = Cooked Meth
 
 -- cough meds, acetone, leadedgas to sudo --
 RegisterServerEvent('sharkmeth:extractsudo')
