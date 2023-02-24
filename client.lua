@@ -2,10 +2,22 @@
 local ox_inventory = exports.ox_inventory
 
 local labs = {
-    [1] = {CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196}, --+4.883, -1.957, 0.401
-    [2] = {CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196}, --+4.883, -1.957, 0.401
-    [3] = {CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196}, --+4.883, -1.957, 0.401
-}
+    [1] = {
+        CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = {0.00, 0.00, 0.00},
+        HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
+        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1,
+    },
+    -- [2] = {
+    --       CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = {0.00, 0.00, 0.00},
+    --       HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
+    --        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1,
+    --       },
+    -- [3] = {
+    --     CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = {0.00, 0.00, 0.00},
+    --     HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
+    --        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1,
+    --     },
+}  --+4.883, -1.957, 0.401
 -- ox target
 
 -- INSIDE LAB INSIDE LAB \/\/
@@ -22,7 +34,7 @@ exports.ox_target:addBoxZone({
                     if result == 1 then
                         Citizen.Wait(2000)
                         TriggerEvent('sharkmeth:notify', 'prepsuccess')
-                        TriggerServerEvent('sharkmeth:localset', 1)
+                        TriggerServerEvent('sharkmeth:localset', 1, 1)
                     else
                         Citizen.Wait(2000)
                         TriggerEvent('sharkmeth:notify', 'prepfail')
@@ -42,19 +54,19 @@ exports.ox_target:addBoxZone({
     options = {
         {
          name = 'ox:option1',
-         onSelect = function() TriggerServerEvent('sharkmeth:extractsudo') end,
+         onSelect = function() TriggerServerEvent('sharkmeth:extractsudo', 1) end,
          icon = 'fa-solid fa-vial',
          label = 'Extract Sudoepherine',
         },
         {
             name = 'ox:option2',
-            onSelect = function() TriggerServerEvent('sharkmeth:extractphos') end,
+            onSelect = function() TriggerServerEvent('sharkmeth:extractphos', 1) end,
             icon = 'fa-solid fa-flask',
             label = 'Extract Phosphorus',
            },
         {
             name = 'ox:option3',
-            onSelect = function() TriggerServerEvent('sharkmeth:cookmeth')end,
+            onSelect = function() TriggerServerEvent('sharkmeth:cookmeth', 1)end,
             icon = 'fa-solid flask-vial',
             label = 'Cook Crystal Meth',
         }
@@ -69,7 +81,7 @@ exports.ox_target:addBoxZone({
     options = {
         {
             name = 'ox:option1',
-            onSelect = function() TriggerServerEvent('sharkmeth:smash')end,
+            onSelect = function() TriggerServerEvent('sharkmeth:smash', 1)end,
             icon = 'fa-solid fa-hammer',
             label = 'Break Meth',
         }
@@ -84,7 +96,7 @@ exports.ox_target:addBoxZone({
     options = {
         {
             name = 'ox:option1',
-            onSelect = function() TriggerServerEvent('sharkmeth:collect') end,
+            onSelect = function() TriggerServerEvent('sharkmeth:collect', 1) end,
             icon = 'fa-solid fa-hard-drive',
             label = 'Collect Product',
         } 
@@ -122,19 +134,19 @@ end
 )
  --Cooking meth
 RegisterNetEvent("sharkmeth:cook")
-AddEventHandler("sharkmeth:cook", function()
+AddEventHandler("sharkmeth:cook", function(value)
     local animDict, animName = "anim@amb@business@meth@meth_monitoring_cooking@cooking@", "chemical_pour_long_cooker"
     RequestAnimDict(animDict)
     while not HasAnimDictLoaded(animDict) do
         Citizen.Wait(10)
     end
     local ped = PlayerPedId()
-    SetEntityCoords(ped, vector3(labs[1].CookX, labs[1].CookY, labs[1].CookZ))
+    SetEntityCoords(ped, vector3(labs[value].CookX, labs[value].CookY, labs[value].CookZ))
     Citizen.Wait(1)
     local targetPosition = GetEntityCoords(ped)
     local animDuration = GetAnimDuration(animDict, animName) * 1000
     FreezeEntityPosition(ped, true)
-    local scenePos, sceneRot = vector3((labs[1].CookX+4.883), (labs[1].CookY-1.957), (labs[1].CookZ+0.401)), vector3(0.0, 0.0, 0.0) -- 353200l
+    local scenePos, sceneRot = vector3((labs[value].CookX+4.883), (labs[value].CookY-1.957), (labs[value].CookZ+0.401)), vector3(0.0, 0.0, 0.0) -- 353200l
     local netScene = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(ped, netScene, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
     
@@ -164,10 +176,10 @@ end)
 
 --Smashing meth
 RegisterNetEvent("sharkmeth:smashy")
-AddEventHandler("sharkmeth:smashy", function()
+AddEventHandler("sharkmeth:smashy", function(value)
     local ped = PlayerPedId()
-    SetEntityCoords(ped, vector3(596.6482, -416.2458, 16.6237))
-    SetEntityHeading(ped,546)
+    SetEntityCoords(ped, vector3(labs[value].HammerX, labs[value].HammerY, labs[value].HammerZ))
+    SetEntityHeading(ped,labs[value].HammerH)
     FreezeEntityPosition(ped, true)
     lib.progressBar({
         duration = 10000,
