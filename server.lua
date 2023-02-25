@@ -1,5 +1,4 @@
 --prep
-local CookState = 0
 local ox_inventory = exports.ox_inventory
 
 local labs = {
@@ -9,15 +8,15 @@ local labs = {
 }
 
 local drugs = {
-    [2] = {'sudo', 5},
-    [3] = {'phos', 4},
-    [4] = {'meth_pure', 10}
+    [2] = {item = 'sudo', count = 5},
+    [3] = {item ='phos', count = 4},
+    [4] = {item = 'meth_pure', count = 10}
 }
 -- Status 0 = Not prepped, Status 1 = Prepped, Status 2 = Cooked Sudo, 3 = Cooked Phos, 4 = Cooked Meth
 --prepare lab
-RegisterServerEvent('sharkmeth:prepcook')
+RegisterServerEvent('sharkmeth:localset')
 AddEventHandler('sharkmeth:localset', function(type, value)
-    local source = src
+    local src = source
     if labs[value].CookState >= type then
         return TriggerClientEvent('sharkmeth:notify', src, 'prepfail')
     else
@@ -89,8 +88,9 @@ end
 RegisterServerEvent('sharkmeth:collect')
 AddEventHandler('sharkmeth:collect', function(value)
     local src = source
+    local cooktype = labs[value].CookState
     if labs[value].CookState > 1 then
-        ox_inventory:AddItem(src, drugs[labs[value].CookState])
+        ox_inventory:AddItem(src, drugs[cooktype].item, drugs[cooktype].count)
         labs[value].CookState = 0
     else
         return TriggerClientEvent('sharkmeth:notify', src, 'collecterror')
@@ -100,11 +100,11 @@ end
 
 --smash meth
 RegisterServerEvent('sharkmeth:smash')
-AddEventHandler('sharkmeth:smash', function()
+AddEventHandler('sharkmeth:smash', function(value)
     local src = source
     local items = ox_inventory:Search(src, 'count', {'meth_pure', 'plasticwrap', 'WEAPON_HAMMER'})
     if items and items.WEAPON_HAMMER > 0 and items.meth_pure > 0 and items.plasticwrap > 0 then
-        TriggerClientEvent('sharkmeth:valuesmashy', src, value)
+        TriggerClientEvent('sharkmeth:smashy', src, value)
         ox_inventory:RemoveItem(src, 'meth_pure', 1)
         ox_inventory:RemoveItem(src, 'plasticwrap', 1)
         Citizen.Wait(10000)
@@ -119,7 +119,7 @@ RegisterServerEvent('sharkmeth:stealsulph')
 AddEventHandler('sharkmeth:stealsulph', function()
     local src = source
     local items = ox_inventory:Search(src, 'count', 'empty_container')
-    if items and items.empty_container > 0 then
+    if items > 0 then
         TriggerClientEvent('sharkmeth:stealy', src)
         Citizen.Wait(10000)
         ox_inventory:RemoveItem(src, 'empty_container', 1)
