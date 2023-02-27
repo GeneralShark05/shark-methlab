@@ -6,19 +6,12 @@ local labs = {
     [2] = {CookState = 0},
     [3] = {CookState = 0},
 }
-
-local drugs = {
-<<<<<<< HEAD
-    [2] = {'sudo', 5},
-    [3] = {'phos', 3},
-    [4] = {'meth_pure', 10}
-=======
-    [2] = {item = 'sudo', count = 5},
-    [3] = {item ='phos', count = 4},
-    [4] = {item = 'meth_pure', count = 10}
->>>>>>> 01c87bf1fc1a95024e238d17a56a551d1cc4fb2c
-}
 -- Status 0 = Not prepped, Status 1 = Prepped, Status 2 = Cooked Sudo, 3 = Cooked Phos, 4 = Cooked Meth
+local drugs = {
+    [2] = {item = 'sudo', count = 5}, -- Normal Sudo
+    [3] = {item ='phos', count = 4}, -- Normal Phos
+    [4] = {item = 'meth_pure', count = 10}, -- Normal Batch
+}
 --prepare lab
 RegisterServerEvent('sharkmeth:localset')
 AddEventHandler('sharkmeth:localset', function(type, value)
@@ -30,6 +23,9 @@ AddEventHandler('sharkmeth:localset', function(type, value)
     end
 end
 )
+------------------------------------------------------------
+-- Real Lab --
+------------------------------------------------------------
 
 -- cough meds, acetone, leadedgas to sudo --
 RegisterServerEvent('sharkmeth:extractsudo')
@@ -55,15 +51,15 @@ RegisterServerEvent('sharkmeth:extractphos')
 AddEventHandler('sharkmeth:extractphos', function(value)
     local src = source
     local items = ox_inventory:Search(src, 'count', {'fertilizer', 'antifreeze', 'sulph'})
-    if items and items.fertilizer > 4 and items.antifreeze > 3 and items.sulph > 1 and labs[value].CookState == 1 then
+    if items and items.fertilizer > 4 and items.antifreeze > 3 and items.sulph >= 1 and labs[value].CookState == 1 then
         labs[value].CookState = 0
         TriggerClientEvent("sharkmeth:cook", src, value)
-        ox_inventory:RemoveItem(src, 'sulph', 2)
+        ox_inventory:RemoveItem(src, 'sulph', 1)
         ox_inventory:RemoveItem(src, 'antifreeze', 4)
-        ox_inventory:RemoveItem(src, 'fertilizer', 5)
+        ox_inventory:RemoveItem(src, 'weapon_flare', 5)
         Citizen.Wait(40000)
         TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
-        ox_inventory:AddItem(src, 'empty_container', 2)
+        ox_inventory:AddItem(src, 'empty_container', 1)
         labs[value].CookState = 3
     else
         return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
@@ -120,8 +116,51 @@ AddEventHandler('sharkmeth:smash', function(value)
         TriggerClientEvent('sharkmeth:notify', src, 'smashfail')
     end
 end)
+------------------------------------------------------------
+-- Cheap Lab --
+------------------------------------------------------------
 
---smash meth
+
+-- Cheap Sudo - Cough Meds, Water, acetone
+RegisterServerEvent('sharkmeth:cheapsudo')
+AddEventHandler('sharkmeth:cheapsudo', function(value)
+    local src = source
+    local items = ox_inventory:Search(src, 'count', {'acetone', 'water', 'coughmeds'})
+    if items and items.acetone > 2 and items.water > 9 and items.coughmeds > 14 then
+        TriggerClientEvent("sharkmeth:cook", src, value)
+        ox_inventory:RemoveItem(src, 'acetone', 3)
+        ox_inventory:RemoveItem(src, 'water', 10)
+        ox_inventory:RemoveItem(src, 'coughmeds', 15)
+        Citizen.Wait(40000)
+        ox_inventory:AddItem(src, 'sudo', 3)
+    else
+        return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+    end
+end
+)
+
+-- Cheap Meth - Flare, Sudo, Iodine
+RegisterServerEvent('sharkmeth:cheapcook')
+AddEventHandler('sharkmeth:cheapcook', function(value)
+    local src = source
+    local items = ox_inventory:Search(src, 'count', {'sudo', 'weapon_flare', 'iodine'})
+    if items and items.sudo > 1 and items.weapon_flare >= 5 and items.iodine > 10 then
+        TriggerClientEvent("sharkmeth:cook", src, value)
+        ox_inventory:RemoveItem(src, 'sudo', 3)
+        ox_inventory:RemoveItem(src, 'weapon_flare', 5)
+        ox_inventory:RemoveItem(src, 'iodine', 10)
+        Citizen.Wait(40000)
+        ox_inventory:AddItem(src, 'meth_pure', 3)
+    else
+        return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+    end
+end
+)
+------------------------------------------------------------
+-- Gathering --
+------------------------------------------------------------
+
+--Steal Sulphuric meth
 RegisterServerEvent('sharkmeth:stealsulph')
 AddEventHandler('sharkmeth:stealsulph', function()
     local src = source
@@ -135,3 +174,28 @@ AddEventHandler('sharkmeth:stealsulph', function()
         TriggerClientEvent('sharkmeth:notify', src, 'stealfail')
     end
 end)
+
+local hookId = exports.ox_inventory:registerHook('buyItem', function(payload)
+    if payload.count > 4 then
+        src = payload.source
+        exports["sonorancad"]:performApiRequest({{
+            ["serverId"] = GetConvar("sonoran_serverId", 1),
+            ["isEmergency"] = true,
+            ["caller"] = payload.shopType,
+            ["location"] = 'Palmer-Taylor Power Station',
+            ["description"] = {'Hi there, we have an individual here who has purchased suspiciously large amounts of ',payload.itemName," We believe they may be involved with criminal activity."},
+            ["metaData"] = {
+                ["postal"] = exports["postal"]:getPostal(src),
+            }
+        }}, "CALL_911")
+        return true
+    end
+end, {
+    print = true,
+    itemFilter = {
+        coughmeds = true,
+        fertilizer = true,
+        weapon_flare = true,
+        
+      },
+})
