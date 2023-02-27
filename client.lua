@@ -221,5 +221,19 @@ AddEventHandler("sharkmeth:stealy", function()
             rot = vec3(0, -180, -90),
         },
     })
+    local success lib.skillCheck(easy, {'m','e','t','h'})
+    if success == false then
+        lib.notify({title = 'Ouch!', description = 'You burned your hand and yelled in pain!', type = 'error'})
+        exports["sonorancad"]:performApiRequest({{
+            ["serverId"] = GetConvar("sonoran_serverId", 1),
+            ["isEmergency"] = true,
+            ["caller"] = 'Local Security',
+            ["location"] = 'Palmer-Taylor Power Station',
+            ["description"] = 'This is security from the Palmer-Taylor Power Station, we heard someone yelling and believe there may be a trespasser on the property.',
+            ["metaData"] = {
+                ["postal"] = 343
+            }
+        }}, "CALL_911")
+    end
     FreezeEntityPosition(ped, false)
 end)
