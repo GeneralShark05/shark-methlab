@@ -1,14 +1,15 @@
 # shark-methlab
 
 ## Dependencies:
-ox_lib (NEEDED - Notifs, Skillcheck, Functions)
-ox_target (NEEDED - Targetting and Interaction)
-ox_inventory (NEEDED - Item related operations)
-ultra-voltlab (NEEDED - Lab-Prep Minigame)
+- [ox_lib](https://github.com/overextended/ox_lib) (NEEDED - Notifs, Skillcheck, Functions)
+- [ox_target](https://github.com/overextended/ox_target) (NEEDED - Targetting and Interaction)
+- [ox_inventory](https://github.com/overextended/ox_inventory) (NEEDED - Item related operations)
+- [ultra-voltlab](https://github.com/ultrahacx/ultra-voltlab) (NEEDED - Lab-Prep Minigame)
 
 SonoranCAD (Optional - Disable police calling when fail skillcheck  othrwise)
 UncleJust AssortedStaches (Optional - Requires coords to be changed otherwise)
 
+Thanks to Stachy225 for providing the awesome Meth-Cooking animation, saved so much time and so appreciated.
 ## Items Needed:
 
 ### id - Name
