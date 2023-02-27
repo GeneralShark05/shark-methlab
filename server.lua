@@ -10,7 +10,7 @@ local labs = {
 
 local drugs = {
     [2] = {'sudo', 5},
-    [3] = {'phos', 4},
+    [3] = {'phos', 3},
     [4] = {'meth_pure', 10}
 }
 -- Status 0 = Not prepped, Status 1 = Prepped, Status 2 = Cooked Sudo, 3 = Cooked Phos, 4 = Cooked Meth
@@ -50,14 +50,15 @@ RegisterServerEvent('sharkmeth:extractphos')
 AddEventHandler('sharkmeth:extractphos', function(value)
     local src = source
     local items = ox_inventory:Search(src, 'count', {'fertilizer', 'antifreeze', 'sulph'})
-    if items and items.fertilizer > 9 and items.antifreeze > 7 and items.sulph > 1 and labs[value].CookState == 1 then
+    if items and items.fertilizer > 4 and items.antifreeze > 3 and items.sulph > 1 and labs[value].CookState == 1 then
         labs[value].CookState = 0
         TriggerClientEvent("sharkmeth:cook", src, value)
         ox_inventory:RemoveItem(src, 'sulph', 2)
-        ox_inventory:RemoveItem(src, 'antifreeze', 8)
-        ox_inventory:RemoveItem(src, 'fertilizer', 10)
+        ox_inventory:RemoveItem(src, 'antifreeze', 4)
+        ox_inventory:RemoveItem(src, 'fertilizer', 5)
         Citizen.Wait(40000)
         TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
+        ox_inventory:AddItem(src, 'empty_container', 2)
         labs[value].CookState = 3
     else
         return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
@@ -70,12 +71,12 @@ RegisterServerEvent('sharkmeth:cookmeth')
 AddEventHandler('sharkmeth:cookmeth', function(value)
     local src = source
     local items = ox_inventory:Search(src, 'count', {'sudo', 'phos', 'iodine'})
-    if items and items.sudo > 3 and items.phos > 0 and items.iodine > 9 and labs[value].CookState == 1 then
+    if items and items.sudo > 1 and items.phos >= 1 and items.iodine > 4 and labs[value].CookState == 1 then
         labs[value].CookState = 0
         TriggerClientEvent("sharkmeth:cook", src, value)
-        ox_inventory:RemoveItem(src, 'sudo', 4)
+        ox_inventory:RemoveItem(src, 'sudo', 2)
         ox_inventory:RemoveItem(src, 'phos', 1)
-        ox_inventory:RemoveItem(src, 'iodine', 10)
+        ox_inventory:RemoveItem(src, 'iodine', 5)
         Citizen.Wait(40000)
         TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
         labs[value].CookState = 4
@@ -128,5 +129,3 @@ AddEventHandler('sharkmeth:stealsulph', function()
         TriggerClientEvent('sharkmeth:notify', src, 'stealfail')
     end
 end)
-
---costas a fucktard
