@@ -9,7 +9,6 @@
 SonoranCAD (Optional - Disable police calling when fail skillcheck  othrwise)
 UncleJust AssortedStaches (Optional - Requires coords to be changed otherwise)
 
-Thanks to Stachy225 for providing the awesome Meth-Cooking animation, saved so much time and so appreciated.
 ## Items Needed:
 
 ### id - Name
@@ -31,12 +30,19 @@ Thanks to Stachy225 for providing the awesome Meth-Cooking animation, saved so m
 
 ## Making Meth
 
-Steal Leaded Gasoline from Sandy Shores Airfield
-Prep Lab -> Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
+1. Steal Leaded Gasoline from Sandy Shores Airfield
+2. Prep Lab
+3. Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
 
-Steal Sulphuric Acid from the Power Station
-Prep Lab -> Extract Phosphuric Acid with Sulphuric Acid, Fertilizer, and Antifreeze
+1. Steal Sulphuric Acid from the Power Station
+2. Prep Lab
+3. Extract Phosphuric Acid with Sulphuric Acid, Fertilizer, and Antifreeze
 
-Prep Lab -> Combine Phosphuric Acid, Sudophedrine, and Iodine to create a tray of unbroken Methamphetamine
+1. Prep Lab 
+2. Combine Phosphuric Acid, Sudophedrine, and Iodine to create a tray of unbroken Methamphetamine
+3. Break Methamphetamine with hammer and Plastic Wrap to get a brick/bag of Methamphetamine.
 
-Break Methamphetamine with hammer and Plastic Wrap to get a brick/bag of Methamphetamine.
+###Thanks to:
+
+- Stachy225 - For providing the awesome Meth-Cooking animation, saved so much time and so appreciated.
+- DRC While **none** of the code is cloned, written from, or even based on, the inspiration for the processes were from DRCs script
