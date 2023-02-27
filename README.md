@@ -45,4 +45,4 @@ UncleJust AssortedStaches (Optional - Requires coords to be changed otherwise)
 ###Thanks to:
 
 - Stachy225 - For providing the awesome Meth-Cooking animation, saved so much time and so appreciated.
-- DRC While **none** of the code is cloned, written from, or even based on, the inspiration for the processes were from DRCs script
+- DRC - While **none** of the code is cloned, written from, or even based on, the inspiration for the processes were from DRCs script
