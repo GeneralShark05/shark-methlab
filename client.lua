@@ -3,10 +3,10 @@ local ox_inventory = exports.ox_inventory
 
 local labs = {
     [1] = {
-        CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = {0.00, 0.00, 0.00},
-        HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
-        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1,
-    },
+        CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = 0.00, 
+        HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 360.0000, 
+        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1
+    }
     -- [2] = {
     --       CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = {0.00, 0.00, 0.00},
     --       HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
@@ -67,7 +67,7 @@ exports.ox_target:addBoxZone({
         {
             name = 'ox:option3',
             onSelect = function() TriggerServerEvent('sharkmeth:cookmeth', 1)end,
-            icon = 'fa-solid flask-vial',
+            icon = 'fa-solid fa-flask-vial',
             label = 'Cook Crystal Meth',
         }
     }
@@ -102,9 +102,9 @@ exports.ox_target:addBoxZone({
         } 
     }
 })
--- INSIDE LAB INSIDE LAB ^^^^
+  -- INSIDE LAB INSIDE LAB ^^^^
 exports.ox_target:addBoxZone({
-    coords = vec3(596.2152, -415.6101, 17.6237),
+    coords = vec3(2662.9579, 1623.7253, 24.7603),
     size = vec3(1, 1, 1),
     rotation = 45,
     debug = drawZones,
@@ -112,7 +112,7 @@ exports.ox_target:addBoxZone({
         {
             name = 'ox:option1',
             onSelect = function() TriggerServerEvent('sharkmeth:stealsulph')end,
-            icon = 'fa-solid fa-flask-round-potion',
+            icon = 'fa-solid fa-faucet-drip',
             label = 'Steal Sulphuric Acid',
         }
     }
@@ -127,11 +127,12 @@ RegisterNetEvent("sharkmeth:notify", function(type)
         ['cooksuccess'] = {title = 'Cook Complete', description = 'Your product is ready to collect.', type = 'success'},
         ['smashfail'] = {title = 'Can\'t Break', description = 'You\'re missing something...', type = 'error'},
         ['collecterror'] = {title = 'Can\'t Collect', description = 'Nothing to collect', type = 'error'},
-        ['stealfail'] = {title = 'Can\t Steal', description = '...You can\'t just carry sulphuric acid in your pocket', type = 'error'}
+        ['stealfail'] = {title = 'Can\t Steal', description = '...You can\'t just pour sulphuric acid in your pocket', type = 'error'}
     } 
     return lib.notify({title = notification[type].title, description = notification[type].description, type = notification[type].type})
 end
 )
+
  --Cooking meth
 RegisterNetEvent("sharkmeth:cook")
 AddEventHandler("sharkmeth:cook", function(value)
@@ -141,12 +142,14 @@ AddEventHandler("sharkmeth:cook", function(value)
         Citizen.Wait(10)
     end
     local ped = PlayerPedId()
-    SetEntityCoords(ped, vector3(labs[value].CookX, labs[value].CookY, labs[value].CookZ))
+    -- SetEntityCoords(ped, vector3(labs[value].CookX, labs[value].CookY, labs[value].CookZ))
+    SetEntityCoords(ped, vector3(593.4044, -426.5631, 18.1196))
     Citizen.Wait(1)
     local targetPosition = GetEntityCoords(ped)
     local animDuration = GetAnimDuration(animDict, animName) * 1000
     FreezeEntityPosition(ped, true)
-    local scenePos, sceneRot = vector3((labs[value].CookX+4.883), (labs[value].CookY-1.957), (labs[value].CookZ+0.401)), vector3(0.0, 0.0, 0.0) -- 353200l
+    local scenePos, sceneRot = vector3(598.2874, -424.6061, 17.7186), vector3(0.0, 0.0, 0.0) -- 353200l
+    --local scenePos, sceneRot = vector3(labs[value].CookX, (labs[value].CookY), (labs[value].CookZ)), vector3(0.0, 0.0, 0.0) -- 353200l
     local netScene = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(ped, netScene, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
     
@@ -162,7 +165,7 @@ AddEventHandler("sharkmeth:cook", function(value)
     local pencil = CreateObjectNoOffset("prop_pencil_01", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(pencil, netScene, animDict, "chemical_pour_long_pencil", 4.0, -8.0, 1)
 
-    local time = animDuration - 20000
+    local time = animDuration - 30000
     NetworkStartSynchronisedScene(netScene)
     lib.progressBar({duration = (time), label = "Cooking..."})
     NetworkStopSynchronisedScene(netScene)
@@ -179,7 +182,7 @@ RegisterNetEvent("sharkmeth:smashy")
 AddEventHandler("sharkmeth:smashy", function(value)
     local ped = PlayerPedId()
     SetEntityCoords(ped, vector3(labs[value].HammerX, labs[value].HammerY, labs[value].HammerZ))
-    SetEntityHeading(ped,labs[value].HammerH)
+    SetEntityHeading(ped, labs[value].HammerH)
     FreezeEntityPosition(ped, true)
     lib.progressBar({
         duration = 10000,
@@ -202,9 +205,9 @@ end)
 RegisterNetEvent("sharkmeth:stealy")
 AddEventHandler("sharkmeth:stealy", function()
     local ped = PlayerPedId()
-    SetEntityCoords(ped, vector3(596.6482, -416.2458, 16.6237))
-    SetEntityHeading(ped,546)
     FreezeEntityPosition(ped, true)
+    SetEntityCoords(ped, vector3(2663.6753, 1623.3765, 23.6703))
+    SetEntityHeading(ped, 90)
     lib.progressBar({
         duration = 10000,
         label = 'Stealing Sulphuric Acid',
@@ -214,10 +217,23 @@ AddEventHandler("sharkmeth:stealy", function()
         },
         prop = {
             model = 'bkr_prop_meth_sacid',
-            pos = vec3(0.07, 0.05, 0.01),
-            rot = vec3(60.0, 0.0, 165.00),
-            bone = 6286,
+            pos = vec3(0, 0, 0.45),
+            rot = vec3(0, -180, -90),
         },
     })
+    local success lib.skillCheck(easy, {'m','e','t','h'})
+    if success == false then
+        lib.notify({title = 'Ouch!', description = 'You burned your hand and yelled in pain!', type = 'error'})
+        exports["sonorancad"]:performApiRequest({{
+            ["serverId"] = GetConvar("sonoran_serverId", 1),
+            ["isEmergency"] = true,
+            ["caller"] = 'Local Security',
+            ["location"] = 'Palmer-Taylor Power Station',
+            ["description"] = 'This is security from the Palmer-Taylor Power Station, we heard someone yelling and believe there may be a trespasser on the property.',
+            ["metaData"] = {
+                ["postal"] = 343
+            }
+        }}, "CALL_911")
+    end
     FreezeEntityPosition(ped, false)
 end)
