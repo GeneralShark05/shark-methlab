@@ -1,6 +1,6 @@
 # shark-methlab
 
-#Dependencies:
+# Dependencies:
 ox_lib (NEEDED - Notifs, Skillcheck, Functions)
 ox_target (NEEDED - Targetting and Interaction)
 ox_inventory (NEEDED - Item related operations)
@@ -9,7 +9,7 @@ ultra-voltlab (NEEDED - Lab-Prep Minigame)
 SonoranCAD (Optional - Disable police calling when fail skillcheck  othrwise)
 UncleJust AssortedStaches (Optional - Requires coords to be changed otherwise)
 
-#Items Needed:
+# Items Needed:
 
 id - Name
 empty_container - Empty Container
@@ -28,7 +28,7 @@ meth_baggie - Baggie of Meth
 plasticwrap - Saran Wrap
 WEAPON_HAMMER - Hammer
 
-#Making Meth
+# Making Meth
 
 Steal Leaded Gasoline from Sandy Shores Airfield
 Prep Lab -> Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
