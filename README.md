@@ -29,15 +29,15 @@ UncleJust AssortedStaches (Optional - Requires coords to be changed otherwise)
 * WEAPON_HAMMER - Hammer
 
 ## Making Meth
-
+- Sudo
 1. Steal Leaded Gasoline from Sandy Shores Airfield
 2. Prep Lab
 3. Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
-
+- Phos
 1. Steal Sulphuric Acid from the Power Station
 2. Prep Lab
 3. Extract Phosphuric Acid with Sulphuric Acid, Fertilizer, and Antifreeze
-
+- Cook
 1. Prep Lab 
 2. Combine Phosphuric Acid, Sudophedrine, and Iodine to create a tray of unbroken Methamphetamine
 3. Break Methamphetamine with hammer and Plastic Wrap to get a brick/bag of Methamphetamine.
