@@ -17,7 +17,7 @@ local labs = {
     --     HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
     --        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1,
     --     },
-}  --+4.883, -1.957, 0.401
+}
 -- ox target
 
 -- INSIDE LAB INSIDE LAB \/\/

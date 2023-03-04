@@ -126,11 +126,11 @@ RegisterServerEvent('sharkmeth:cheapsudo')
 AddEventHandler('sharkmeth:cheapsudo', function(value)
     local src = source
     local items = ox_inventory:Search(src, 'count', {'acetone', 'water', 'coughmeds'})
-    if items and items.acetone > 2 and items.water > 9 and items.coughmeds > 14 then
+    if items and items.acetone > 2 and items.water > 9 and items.coughmeds > 24 then
         TriggerClientEvent("sharkmeth:cook", src, value)
         ox_inventory:RemoveItem(src, 'acetone', 3)
         ox_inventory:RemoveItem(src, 'water', 10)
-        ox_inventory:RemoveItem(src, 'coughmeds', 15)
+        ox_inventory:RemoveItem(src, 'coughmeds', 25)
         Citizen.Wait(40000)
         ox_inventory:AddItem(src, 'sudo', 3)
     else
@@ -144,7 +144,7 @@ RegisterServerEvent('sharkmeth:cheapcook')
 AddEventHandler('sharkmeth:cheapcook', function(value)
     local src = source
     local items = ox_inventory:Search(src, 'count', {'sudo', 'weapon_flare', 'iodine'})
-    if items and items.sudo > 1 and items.weapon_flare >= 5 and items.iodine > 10 then
+    if items and items.sudo > 1 and items.weapon_flare > 4 and items.iodine > 10 then
         TriggerClientEvent("sharkmeth:cook", src, value)
         ox_inventory:RemoveItem(src, 'sudo', 3)
         ox_inventory:RemoveItem(src, 'weapon_flare', 5)
@@ -178,12 +178,14 @@ end)
 local hookId = exports.ox_inventory:registerHook('buyItem', function(payload)
     if payload.count > 4 then
         src = payload.source
+        street = GetStreetNameAtCoord(NetworkGetPlayerCoords(src))
+        
         exports["sonorancad"]:performApiRequest({{
             ["serverId"] = GetConvar("sonoran_serverId", 1),
             ["isEmergency"] = true,
-            ["caller"] = payload.shopType,
-            ["location"] = 'Palmer-Taylor Power Station',
-            ["description"] = {'Hi there, we have an individual here who has purchased suspiciously large amounts of ',payload.itemName," We believe they may be involved with criminal activity."},
+            ["caller"] = shopType..' Manager',
+            ["location"] = street,
+            ["description"] = {'Hi there, we have an individual here who has purchased suspiciously large amounts of '..payload.itemName..". We believe they may be involved with criminal activity."},
             ["metaData"] = {
                 ["postal"] = exports["postal"]:getPostal(src),
             }
@@ -191,11 +193,12 @@ local hookId = exports.ox_inventory:registerHook('buyItem', function(payload)
         return true
     end
 end, {
-    print = true,
     itemFilter = {
         coughmeds = true,
         fertilizer = true,
         weapon_flare = true,
-        
+        iodine = true,
+        antifreeze = true,
+        acetone = true,
       },
 })
