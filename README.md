@@ -30,9 +30,8 @@ UncleJust AssortedStaches (Optional - Requires coords to be changed otherwise)
 
 ## Making Meth
 - Sudo
-1. Steal Leaded Gasoline from Sandy Shores Airfield
-2. Prep Lab
-3. Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
+1. Prep Lab
+2. Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
 - Phos
 1. Steal Sulphuric Acid from the Power Station
 2. Prep Lab
