@@ -183,7 +183,20 @@ end)
 local hookId = exports.ox_inventory:registerHook('buyItem', function(payload)
     if payload.count > 4 then
         src = payload.source
+<<<<<<< Updated upstream
         TriggerClientEvent('sharkmeth:callalert', src, payload.shopType)
+=======
+        exports["sonorancad"]:performApiRequest({{
+            ["serverId"] = GetConvar("sonoran_serverId", 1),
+            ["isEmergency"] = true,
+            ["caller"] = payload.shopType,
+            ["location"] = GETROADNAME,
+            ["description"] = {'Hi there, we have an individual here who has purchased suspiciously large amounts of '..payload.itemName.." We believe they may be involved with criminal activity."},
+            ["metaData"] = {
+                ["postal"] = exports["postal"]:getPostal(src),
+            }
+        }}, "CALL_911")
+>>>>>>> Stashed changes
         return true
     end
 end, 

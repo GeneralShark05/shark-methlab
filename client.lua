@@ -71,6 +71,9 @@ exports.ox_target:addBoxZone({
             end) end,
             icon = 'fa-solid fa-clipboard',
             label = 'Prep Lab Equipment',
+            canInteract = function(distance)
+                return distance < 3
+            end
         }
     }
 })
@@ -82,22 +85,42 @@ exports.ox_target:addBoxZone({
     debug = false,
     options = {
         {
+<<<<<<< Updated upstream
         name = 'ox:option1',
         onSelect = function() TriggerServerEvent('sharkmeth:extractsudo', 1) end,
         icon = 'fa-solid fa-vial',
         label = 'Extract Sudoepherine',
+=======
+         name = 'ox:option1',
+         onSelect = function() TriggerServerEvent('sharkmeth:extractsudo', 1) end,
+         icon = 'fa-solid fa-vial',
+         label = 'Extract Sudoepherine',
+         canInteract = function(distance)
+            return distance < 3
+        end
+>>>>>>> Stashed changes
         },
         {
             name = 'ox:option2',
             onSelect = function() TriggerServerEvent('sharkmeth:extractphos', 1) end,
             icon = 'fa-solid fa-flask',
             label = 'Extract Phosphorus',
+<<<<<<< Updated upstream
         },
+=======
+            canInteract = function(distance)
+                return distance < 3
+            end
+           },
+>>>>>>> Stashed changes
         {
             name = 'ox:option3',
             onSelect = function() TriggerServerEvent('sharkmeth:cookmeth', 1)end,
             icon = 'fa-solid fa-flask-vial',
             label = 'Cook Crystal Meth',
+            canInteract = function(distance)
+                return distance < 3
+            end
         }
     }
 })
@@ -113,6 +136,9 @@ exports.ox_target:addBoxZone({
             onSelect = function() TriggerServerEvent('sharkmeth:smash', 1)end,
             icon = 'fa-solid fa-hammer',
             label = 'Break Meth',
+            canInteract = function(distance)
+                return distance < 3
+            end
         }
     }
 })
@@ -128,6 +154,9 @@ exports.ox_target:addBoxZone({
             onSelect = function() TriggerServerEvent('sharkmeth:collect', 1) end,
             icon = 'fa-solid fa-hard-drive',
             label = 'Collect Product',
+            canInteract = function(distance)
+                return distance < 3
+            end
         } 
     }
 })
@@ -142,9 +171,18 @@ exports.ox_target:addBoxZone({
     options = {
         {
             name = 'ox:option1',
+<<<<<<< Updated upstream
             onSelect = function() TriggerServerEvent('sharkmeth:cheapcook') end,
             icon = 'fa-solid fa-flask-vial',
             label = 'Cook Crystal Meth',
+=======
+            onSelect = function() TriggerServerEvent('sharkmeth:stealsulph')end,
+            icon = 'fa-solid fa-faucet-drip',
+            label = 'Steal Sulphuric Acid',
+            canInteract = function(distance)
+                return distance < 3
+            end
+>>>>>>> Stashed changes
         }
     }
 })
