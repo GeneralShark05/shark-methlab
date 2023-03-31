@@ -1,29 +1,11 @@
---setup
+---@diagnostic disable: undefined-global
 local ox_inventory = exports.ox_inventory
     ------------------------------------------------------------
     -- Lab  Startup --
-    ------------------------------------------------------------
-
-local labs = {
-    [1] = {
-        CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = 0.00, 
-        HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 360.0000, 
-        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1
-    }
-    -- [2] = {
-    --       CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = {0.00, 0.00, 0.00},
-    --       HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
-    --        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1,
-    --       },
-    -- [3] = {
-    --     CookX = 593.4044, CookY = -426.5631, CookZ = 18.1196, CookH = {0.00, 0.00, 0.00},
-    --     HammerX = 596.6482, HammerY = -416.2458, HammerZ = 16.6237, HammerH = 546,
-    --        PrepX = 595.1400, PrepY = -420.8869, PrepZ = 18.1,
-    --     },
-}
+    -----------------------------------------------------------
 
 Citizen.CreateThread(function()
-    local interiorHash = GetInteriorAtCoordsWithType(578.09400,-423.0649,24.730,"int_stock")
+    local interiorHash = GetInteriorAtCoordsWithType(-1262.992,-1123.942,7.6170,"int_stock")
     RefreshInterior(interiorHash)
     DisableInteriorProp(interiorHash, "light_stock")
     DisableInteriorProp(interiorHash, "meth_app")
@@ -45,153 +27,111 @@ Citizen.CreateThread(function()
     EnableInteriorProp(interiorHash, "meth_update_lab_02")
     EnableInteriorProp(interiorHash, "meth_update_lab_01_2")
     EnableInteriorProp(interiorHash, "meth_update_lab_02_2")
+
+    EnableInteriorProp(interiorHash, "meth_stock")
+
 end)
 
     ------------------------------------------------------------
     -- Real Lab --
     ------------------------------------------------------------
-exports.ox_target:addBoxZone({
-    coords = vec3(595.1400, -420.8869, 18),
-    size = vec3(0.5, 0.5, 0.7),
-    rotation = -5,
-    debug = false,
-    options = {
-        {
-            name = 'prepcook',
-            onSelect = function()
-                TriggerEvent('ultra-voltlab', 45, function(result)
-                    if result == 1 then
-                        Citizen.Wait(2000)
-                        TriggerEvent('sharkmeth:notify', 'prepsuccess')
-                        TriggerServerEvent('sharkmeth:localset', 1, 1)
-                    else
-                        Citizen.Wait(2000)
-                        TriggerEvent('sharkmeth:notify', 'prepfail')
-                    end
-            end) end,
-            icon = 'fa-solid fa-clipboard',
-            label = 'Prep Lab Equipment',
-            canInteract = function(distance)
-                return distance < 3
-            end
+for k,v in ipairs(Config.labs.meth) do
+    exports.ox_target:addBoxZone({
+        coords = vector3(Config.labs.meth[k].PrepTarget),
+        size = vector3(0.5, 0.5, 0.7),
+        rotation = Config.labs.meth[k].PrepRotate,
+        debug = Config.Debug,
+        options = {
+            {
+                name = 'prepcook',
+                onSelect = function()
+                    TriggerEvent('ultra-voltlab', 45, function(result)
+                        if result == 1 then
+                            Citizen.Wait(2000)
+                            TriggerEvent('sharkmeth:notify', 'prepsuccess')
+                            TriggerServerEvent('sharkmeth:localset', 1, k)
+                        else
+                            Citizen.Wait(2000)
+                            TriggerEvent('sharkmeth:notify', 'prepfail')
+                        end
+                end) end,
+                icon = 'fa-solid fa-clipboard',
+                label = 'Prep Lab Equipment',
+            },
+            {
+                name = 'ox:option1',
+                onSelect = function() TriggerServerEvent('sharkmeth:collect', k) end,
+                icon = 'fa-solid fa-hard-drive',
+                label = 'Collect Product',
+            } 
         }
-    }
-})
+    })
 
-exports.ox_target:addBoxZone({
-    coords = vec3(593.29, -427.20, 18.3),
-    size = vec3(0.5, 0.5, 0.5),
-    rotation = -5,
-    debug = false,
-    options = {
-        {
-<<<<<<< Updated upstream
-        name = 'ox:option1',
-        onSelect = function() TriggerServerEvent('sharkmeth:extractsudo', 1) end,
-        icon = 'fa-solid fa-vial',
-        label = 'Extract Sudoepherine',
-=======
-         name = 'ox:option1',
-         onSelect = function() TriggerServerEvent('sharkmeth:extractsudo', 1) end,
-         icon = 'fa-solid fa-vial',
-         label = 'Extract Sudoepherine',
-         canInteract = function(distance)
-            return distance < 3
-        end
->>>>>>> Stashed changes
-        },
-        {
-            name = 'ox:option2',
-            onSelect = function() TriggerServerEvent('sharkmeth:extractphos', 1) end,
-            icon = 'fa-solid fa-flask',
-            label = 'Extract Phosphorus',
-<<<<<<< Updated upstream
-        },
-=======
-            canInteract = function(distance)
-                return distance < 3
-            end
-           },
->>>>>>> Stashed changes
-        {
-            name = 'ox:option3',
-            onSelect = function() TriggerServerEvent('sharkmeth:cookmeth', 1)end,
-            icon = 'fa-solid fa-flask-vial',
-            label = 'Cook Crystal Meth',
-            canInteract = function(distance)
-                return distance < 3
-            end
-        }
-    }
-})
-
-exports.ox_target:addBoxZone({
-    coords = vec3(596.3, -415.4, 17.5),
-    size = vec3(2, 1, 0.5),
-    rotation = -5,
-    debug = false,
-    options = {
-        {
+    exports.ox_target:addBoxZone({
+        coords = vector3(Config.labs.meth[k].CookTarget),
+        size = vector3(0.5, 0.5, 0.5),
+        rotation = Config.labs.meth[k].CookRotate,
+        debug = Config.Debug,
+        options = {
+            {
             name = 'ox:option1',
-            onSelect = function() TriggerServerEvent('sharkmeth:smash', 1)end,
-            icon = 'fa-solid fa-hammer',
-            label = 'Break Meth',
-            canInteract = function(distance)
-                return distance < 3
-            end
+            onSelect = function() TriggerServerEvent('sharkmeth:extractsudo', k) end,
+            icon = 'fa-solid fa-vial',
+            label = 'Extract Sudoepherine',
+            },
+            {
+                name = 'ox:option2',
+                onSelect = function() TriggerServerEvent('sharkmeth:extractphos', k) end,
+                icon = 'fa-solid fa-flask',
+                label = 'Extract Phosphorus',
+            },
+            {
+                name = 'ox:option3',
+                onSelect = function() TriggerServerEvent('sharkmeth:cookmeth', k)end,
+                icon = 'fa-solid fa-flask-vial',
+                label = 'Cook Crystal Meth',
+            }
         }
-    }
-})
+    })
 
-exports.ox_target:addBoxZone({
-    coords = vec3(595.2357, -428.0095, 18),
-    size = vec3(1, 0.5, 1),
-    rotation = -5,
-    debug = false,
-    options = {
-        {
-            name = 'ox:option1',
-            onSelect = function() TriggerServerEvent('sharkmeth:collect', 1) end,
-            icon = 'fa-solid fa-hard-drive',
-            label = 'Collect Product',
-            canInteract = function(distance)
-                return distance < 3
-            end
-        } 
-    }
-})
+    exports.ox_target:addBoxZone({
+        coords = vector3(Config.labs.meth[k].HammerTarget),
+        size = vector3(2, 1, 0.5),
+        rotation = Config.labs.meth[k].HammerRotate,
+        debug = Config.Debug,
+        options = {
+            {
+                name = 'ox:option1',
+                onSelect = function() TriggerServerEvent('sharkmeth:smash', k)end,
+                icon = 'fa-solid fa-hammer',
+                label = 'Break Meth',
+            }
+        }
+    })
+end
 ------------------------------------------------------------
 -- Cheap Lab --
 ------------------------------------------------------------
 exports.ox_target:addBoxZone({
-    coords = vec3(2433.20, 4969.93, 42.4),
-    size = vec3(1, 0.7, 0.5),
-    rotation = 45,
-    debug = false,
+    coords = vector3(1391, 3605.5710, 38.9),
+    size = vector3(0.8, 0.8, 0.8),
+    rotation = 20,
+    debug = Config.Debug,
     options = {
         {
             name = 'ox:option1',
-<<<<<<< Updated upstream
             onSelect = function() TriggerServerEvent('sharkmeth:cheapcook') end,
-            icon = 'fa-solid fa-flask-vial',
+            icon = 'fa-solid fa-vial',
             label = 'Cook Crystal Meth',
-=======
-            onSelect = function() TriggerServerEvent('sharkmeth:stealsulph')end,
-            icon = 'fa-solid fa-faucet-drip',
-            label = 'Steal Sulphuric Acid',
-            canInteract = function(distance)
-                return distance < 3
-            end
->>>>>>> Stashed changes
         }
     }
 })
 
 exports.ox_target:addBoxZone({
-    coords = vec3(2435.05, 4963.34, 42.4),
-    size = vec3(1, 1, 0.5),
-    rotation = 45,
-    debug = false,
+    coords = vector3(1390.50, 3603.8, 38.9418),
+    size = vector3(1, 1.5, 0.5),
+    rotation = 20,
+    debug = Config.Debug,
     options = {
         {
             name = 'ox:option1',
@@ -201,17 +141,18 @@ exports.ox_target:addBoxZone({
         }
     }
 })
+
 ------------------------------------------------------------
 -- Gathering  --
 ------------------------------------------------------------
 exports.ox_target:addSphereZone({
-coords = vec3(2662.9579, 1623.7253, 24.7603),
+coords = vector3(2662.9579, 1623.7253, 24.7603),
 radius = 0.3,
-debug = false,
+debug = Config.Debug,
 options = {
     {
         name = 'ox:option1',
-        onSelect = function() TriggerServerEvent('sharkmeth:stealsulph')end,
+        onSelect = function() TriggerServerEvent('sharkmeth:stealSulph')end,
         icon = 'fa-solid fa-faucet-drip',
         label = 'Steal Sulphuric Acid',
     }
@@ -245,13 +186,11 @@ AddEventHandler("sharkmeth:cook", function(value)
         Citizen.Wait(10)
     end
     local ped = PlayerPedId()
-    -- SetEntityCoords(ped, vector3(labs[value].CookX, labs[value].CookY, labs[value].CookZ))
-    SetEntityCoords(ped, vector3(593.4044, -426.5631, 18.1196))
+    SetEntityCoords(ped, vector3(Config.labs.meth[value].CookAnim))
     Citizen.Wait(1)
     local targetPosition = GetEntityCoords(ped)
     FreezeEntityPosition(ped, true)
-    local scenePos, sceneRot = vector3(598.2874, -424.6061, 17.7186), vector3(0.0, 0.0, 0.0) -- 353200l
-    --local scenePos, sceneRot = vector3(labs[value].CookX, (labs[value].CookY), (labs[value].CookZ)), vector3(0.0, 0.0, 0.0) -- 353200l
+    local scenePos, sceneRot = vector3((Config.labs.meth[value].CookAnim[1] +4.883), (Config.labs.meth[value].CookAnim[2]+1.957), (Config.labs.meth[value].CookAnim[3]-0.401)), vector3(0.0, 0.0, 0.0) -- 353200l 
     local netScene = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(ped, netScene, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
     
@@ -278,26 +217,27 @@ AddEventHandler("sharkmeth:cook", function(value)
     FreezeEntityPosition(ped, false)
 end)
 
+
 ------------------------------------------------------------
 -- Smashing Lab --
 ------------------------------------------------------------
 RegisterNetEvent("sharkmeth:smashy")
 AddEventHandler("sharkmeth:smashy", function(value)
     local ped = PlayerPedId()
-    SetEntityCoords(ped, vector3(labs[value].HammerX, labs[value].HammerY, labs[value].HammerZ))
-    SetEntityHeading(ped, labs[value].HammerH)
+    SetEntityCoords(ped, vector3(Config.labs.meth[value].HammerAnim))
+    SetEntityHeading(ped, Config.labs.meth[value].HammerH)
     FreezeEntityPosition(ped, true)
     lib.progressBar({
-        duration = 10000,
-        label = 'Breaking up Methamphetamine',
+        duration = 5000,
+        label = 'Breaking up Meth',
         anim = {
             dict = 'anim@amb@business@meth@meth_smash_weight_check@',
             clip = 'break_weigh_char02'
         },
         prop = {
             model = 'prop_tool_hammer',
-            pos = vec3(0.07, 0.05, 0.01),
-            rot = vec3(60.0, 0.0, 165.00),
+            pos = vector3(0.07, 0.05, 0.01),
+            rot = vector3(60.0, 0.0, 165.00),
             bone = 6286,
         },
     })
@@ -313,8 +253,8 @@ AddEventHandler("sharkmeth:cookcheap", function(type)
 
     if type == 'meth' then
         FreezeEntityPosition(ped, true)
-        SetEntityCoords(ped, vector3(2432.68, 4970.29, 41.5))
-        SetEntityHeading(ped, 225.41)
+        SetEntityCoords(ped, vector3(1391.8817, 3605.8767, 38))
+        SetEntityHeading(ped, 103.0970)
         lib.progressBar({
             duration = 20000,
             label = 'Cooking Meth',
@@ -330,10 +270,10 @@ AddEventHandler("sharkmeth:cookcheap", function(type)
         })
         FreezeEntityPosition(ped, false)
 
-    else
+    elseif type =='sudo' then
         FreezeEntityPosition(ped, true)
-        SetEntityCoords(ped, vector3(2434.55, 4963.95, 41.5))
-        SetEntityHeading(ped, 224.36)
+        SetEntityCoords(ped, vector3(1389.7385, 3603.3762, 38))
+        SetEntityHeading(ped, 292.2780)
         lib.progressBar({
             duration = 20000,
             label = 'Extracting Sudo',
@@ -347,14 +287,15 @@ AddEventHandler("sharkmeth:cookcheap", function(type)
                 clip = 'car_bomb_mechanic'
             },
         })
-        FreezeEntityPosition(ped, false)
     end
 end)
+
+
 ------------------------------------------------------------
 -- Stealing --
 ------------------------------------------------------------
-RegisterNetEvent("sharkmeth:stealy")
-AddEventHandler("sharkmeth:stealy", function()
+RegisterNetEvent("sharkmeth:stealAcid")
+AddEventHandler("sharkmeth:stealAcid", function()
     local ped = PlayerPedId()
     FreezeEntityPosition(ped, true)
     SetEntityCoords(ped, vector3(2663.6753, 1623.3765, 23.6703))
@@ -368,41 +309,25 @@ AddEventHandler("sharkmeth:stealy", function()
         },
         prop = {
             model = 'bkr_prop_meth_sacid',
-            pos = vec3(0, 0, 0.45),
-            rot = vec3(0, -180, -90),
+            pos = vector3(0, 0, 0.45),
+            rot = vector3(0, -180, -90),
         },
     })
     FreezeEntityPosition(ped, false)
     if math.random(5) == 5 then
         lib.notify({title = 'Ouch!', description = 'You burned your hand and yelled in pain!', type = 'error'})
-        exports["sonorancad"]:performApiRequest({{
-            ["serverId"] = GetConvar("sonoran_serverId", 1),
-            ["isEmergency"] = true,
-            ["caller"] = 'Local Security',
-            ["location"] = 'Palmer-Taylor Power Station',
-            ["description"] = 'This is security from the Palmer-Taylor Power Station, we heard someone yelling and believe there may be a trespasser on the property.',
-            ["metaData"] = {
-                ["postal"] = 343
-            }
-        }}, "CALL_911")
+        TriggerServerEvent('sharkmeth:powerplant')
     end
 end)
 
-RegisterNetEvent("sharkmeth:callalert")
-AddEventHandler("sharkmeth:callalert", function(shopType)
-    local ped = GetPlayerPed()
-    local  v = NetworkGetPlayerCoords(ped)
-    local x, y, z = table.unpack(v)
+------------------------------------------------------------
+-- Grab Street --
+------------------------------------------------------------
+
+RegisterNetEvent("sharkmeth:getStreet")
+AddEventHandler("sharkmeth:getStreet", function(x, y, z, item)
     local  street = GetStreetNameAtCoord(x,y,z)
     local  streetname = GetStreetNameFromHashKey(street)
-    exports["sonorancad"]:performApiRequest({{
-        ["serverId"] = GetConvar("sonoran_serverId", 1),
-        ["isEmergency"] = true,
-        ["caller"] = shopType..' Manager',
-        ["location"] = streetname,
-        ["description"] = {'Hi there, we have an individual here who has purchased suspicious amounts of items. We believe they may be involved with criminal activity.'},
-        ["metaData"] = {
-            ["postal"] = exports["postal"]:getPostal(src),
-        }
-    }}, "CALL_911")
+    local postal = exports.postal:getPostal()
+    TriggerServerEvent('sharkmeth:buyalert', streetname, postal, item)
 end)
