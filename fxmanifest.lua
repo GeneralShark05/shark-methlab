@@ -3,13 +3,16 @@ fx_version 'cerulean'
 games { 'gta5' }
 lua54 'yes'
 
-author 'Shark'
-description 'fuck around find out'
+author 'General Shark'
+description 'Advanced Meth Cooking Script'
 version '0.0.1'
 
 dependencies { 'ox_lib', 'ox_target', 'ox_inventory', 'ultra-voltlab' }
 
-shared_script '@ox_lib/init.lua'
+shared_scripts {
+    '@ox_lib/init.lua',
+    'config.lua'
+}
 
 client_script "client.lua"
 
