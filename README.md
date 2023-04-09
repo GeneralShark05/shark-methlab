@@ -2,13 +2,13 @@
 An advanced meth-making script based on real life methods!
 
 ## Dependencies:
-- [ox_lib](https://github.com/overextended/ox_lib
+- [ox_lib](https://github.com/overextended/ox_lib)
 - [ox_target](https://github.com/overextended/ox_target)
 - [ox_inventory](https://github.com/overextended/ox_inventory)
 - [ultra-voltlab](https://github.com/ultrahacx/ultra-voltlab)
 
-SonoranCAD (Optional - Change in Config)
-BobIPL(Optional - Change in Config)
+- SonoranCAD (Optional - Change in Config)
+- BobIPL (Optional - Change in Config)
 
 ## Items Needed:
 
