@@ -1,10 +1,11 @@
 # shark-methlab
+An advanced meth-making script based on real life methods!
 
 ## Dependencies:
-- [ox_lib](https://github.com/overextended/ox_lib) (NEEDED - Notifs, Skillcheck, Functions)
-- [ox_target](https://github.com/overextended/ox_target) (NEEDED - Targetting and Interaction)
-- [ox_inventory](https://github.com/overextended/ox_inventory) (NEEDED - Item related operations)
-- [ultra-voltlab](https://github.com/ultrahacx/ultra-voltlab) (NEEDED - Lab-Prep Minigame)
+- [ox_lib](https://github.com/overextended/ox_lib
+- [ox_target](https://github.com/overextended/ox_target)
+- [ox_inventory](https://github.com/overextended/ox_inventory)
+- [ultra-voltlab](https://github.com/ultrahacx/ultra-voltlab)
 
 SonoranCAD (Optional - Change in Config)
 BobIPL(Optional - Change in Config)
@@ -40,6 +41,8 @@ BobIPL(Optional - Change in Config)
 2. Combine Phosphuric Acid, Sudophedrine, and Iodine to create a tray of unbroken Methamphetamine
 3. Break Methamphetamine with hammer and Plastic Wrap to get a brick/bag of Methamphetamine.
 
-###Thanks to:
+### Thanks to:
 
 - Stachy225 - For providing the awesome Meth-Cooking animation, saved so much time and so appreciated.
+
+[Support - Discord](https://discord.gg/mFnNTV2Zce)
