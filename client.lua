@@ -90,8 +90,7 @@ for k,v in ipairs(Config.labs) do
     })
 end
 
--- Cheap Labs --
-
+-- Cheap Lab --
 ox_target:addBoxZone({
     coords = vector3(Config.cheapMeth.targetCoords1),
     size = vector3(0.8, 0.8, 0.8),
@@ -127,6 +126,7 @@ ox_target:addBoxZone({
         }
     }
 })
+
 -- Gather Acid  --
 ox_target:addSphereZone({
     coords = vector3(2662.9579, 1623.7253, 24.7603),
@@ -156,7 +156,7 @@ RegisterNetEvent("sharkmeth:notify", function(type)
         ['smashfail'] = {title = 'Can\'t Break', description = 'You\'re missing something...', type = 'error'},
         ['collecterror'] = {title = 'Can\'t Collect', description = 'Nothing to collect', type = 'error'},
         ['stealfail'] = {title = 'Can\t Steal', description = '...You can\'t just pour sulphuric acid in your pocket', type = 'error'}
-    } 
+    }
     return lib.notify({title = notification[type].title, description = notification[type].description, type = notification[type].type})
 end)
 ------------------------------------------------------------
@@ -260,8 +260,6 @@ AddEventHandler("sharkmeth:cookAnim", function(value)
     FreezeEntityPosition(ped, false)
     isBusy = false
 end)
-
-
 ------------------------------------------------------------
 -- Smashing Lab --
 ------------------------------------------------------------
@@ -309,7 +307,6 @@ AddEventHandler("sharkmeth:smashAnim", function(value)
     RemoveAnimDict(animDict)
     isBusy = false
 end)
-
 ------------------------------------------------------------
 -- Cooking Cheap --
 ------------------------------------------------------------
@@ -357,8 +354,6 @@ AddEventHandler("sharkmeth:cheapAnim", function(type)
         isBusy = false
     end
 end)
-
-
 ------------------------------------------------------------
 -- Stealing --
 ------------------------------------------------------------
@@ -390,7 +385,6 @@ AddEventHandler("sharkmeth:stealAcid", function()
         TriggerServerEvent('sharkmeth:stealAlert')
     end
 end)
-
 ------------------------------------------------------------
 -- Grab Street --
 ------------------------------------------------------------
