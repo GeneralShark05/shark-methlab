@@ -1,6 +1,6 @@
 local ox_inventory = exports.ox_inventory
 local ox_target = exports.ox_target
-
+local isBusy = false
 
 -------------------------------------------------------
 -- Targetting  --
@@ -18,12 +18,18 @@ for k,v in ipairs(Config.labs) do
                 onSelect = function() TriggerEvent('sharkmeth:prepAnim', k) end,
                 icon = 'fa-solid fa-clipboard',
                 label = 'Prep Lab Equipment',
+                canInteract = function(entity, distance, coords, name, bone)
+                    return not isBusy
+                end
             },
             {
                 name = 'ox:option1',
                 onSelect = function() TriggerServerEvent('sharkmeth:collect', k) end,
                 icon = 'fa-solid fa-hard-drive',
                 label = 'Collect Product',
+                canInteract = function(entity, distance, coords, name, bone)
+                    return not isBusy
+                end
             }
         }
     })
@@ -39,18 +45,27 @@ for k,v in ipairs(Config.labs) do
                 onSelect = function() TriggerServerEvent('sharkmeth:extractSudo', k) end,
                 icon = 'fa-solid fa-vial',
                 label = 'Extract Pseudoephedrine',
+                canInteract = function(entity, distance, coords, name, bone)
+                    return not isBusy
+                end
             },
             {
                 name = 'ox:option2',
                 onSelect = function() TriggerServerEvent('sharkmeth:extractPhos', k) end,
                 icon = 'fa-solid fa-flask',
                 label = 'Extract Phosphorus',
+                canInteract = function(entity, distance, coords, name, bone)
+                    return not isBusy
+                end
             },
             {
                 name = 'ox:option3',
                 onSelect = function() TriggerServerEvent('sharkmeth:cookMeth', k)end,
                 icon = 'fa-solid fa-flask-vial',
                 label = 'Cook Crystal Meth',
+                canInteract = function(entity, distance, coords, name, bone)
+                    return not isBusy
+                end
             }
         }
     })
@@ -67,6 +82,9 @@ for k,v in ipairs(Config.labs) do
                 onSelect = function() TriggerServerEvent('sharkmeth:smashServer', k)end,
                 icon = 'fa-solid fa-hammer',
                 label = 'Break Meth',
+                canInteract = function(entity, distance, coords, name, bone)
+                    return not isBusy
+                end
             }
         }
     })
@@ -85,6 +103,9 @@ ox_target:addBoxZone({
             onSelect = function() TriggerServerEvent('sharkmeth:cheapCook') end,
             icon = 'fa-solid fa-vial',
             label = 'Cook Crystal Meth',
+            canInteract = function(entity, distance, coords, name, bone)
+                return not isBusy
+            end
         }
     }
 })
@@ -100,13 +121,13 @@ ox_target:addBoxZone({
             onSelect = function() TriggerServerEvent('sharkmeth:cheapSudo') end,
             icon = 'fa-solid fa-flask-vial',
             label = 'Extract Pseudoephedrine',
+            canInteract = function(entity, distance, coords, name, bone)
+                return not isBusy
+            end
         }
     }
 })
-
-
 -- Gather Acid  --
-
 ox_target:addSphereZone({
     coords = vector3(2662.9579, 1623.7253, 24.7603),
     radius = 0.3,
@@ -117,6 +138,9 @@ ox_target:addSphereZone({
             onSelect = function() TriggerServerEvent('sharkmeth:stealSulph')end,
             icon = 'fa-solid fa-faucet-drip',
             label = 'Steal Sulphuric Acid',
+            canInteract = function(entity, distance, coords, name, bone)
+                return not isBusy
+            end
         }
     }
 })
@@ -146,12 +170,23 @@ if Config.Debug then
     RegisterCommand('breaktest', function() 
         TriggerEvent('sharkmeth:smashAnim', 1)
     end, false)
+
+    RegisterCommand('busytest', function()
+        if isBusy then
+            isBusy = false
+            return print('busy no more')
+        else
+            isBusy = true
+            return print('busy now')
+        end
+    end, false)
 end
 ------------------------------------------------------------
 -- Prep Main --
 ------------------------------------------------------------
 RegisterNetEvent("sharkmeth:prepAnim")
 AddEventHandler("sharkmeth:prepAnim", function(value)
+    isBusy = true
     local animDict = 'anim@heists@humane_labs@emp@hack_door'
     RequestAnimDict(animDict)
     while not HasAnimDictLoaded(animDict) do
@@ -164,18 +199,18 @@ AddEventHandler("sharkmeth:prepAnim", function(value)
     ClearPedTasks(ped)
     TaskPlayAnim(ped, animDict, 'hack_loop', 8.0, 8.0, -1, 1, 0)
     TriggerEvent('ultra-voltlab', 45, function(result)
+        Wait(2000)
         if result == 1 then
-            Wait(2000)
             TriggerEvent('sharkmeth:notify', 'prepsuccess')
             TriggerServerEvent('sharkmeth:localSet', 1, value)
         else
-            Wait(2000)
             TriggerEvent('sharkmeth:notify', 'prepfail')
         end
         ClearPedTasks(ped)
         TaskPlayAnim(ped, animDict, 'hack_outro', 8.0, 8.0, -1, 0, 0)
         RemoveAnimDict(animDict)
         FreezeEntityPosition(ped, false)
+        isBusy = false
     end)
 end)
 ------------------------------------------------------------
@@ -183,6 +218,7 @@ end)
 ------------------------------------------------------------
 RegisterNetEvent("sharkmeth:cookAnim")
 AddEventHandler("sharkmeth:cookAnim", function(value)
+    isBusy = true
     local animDict, animName = "anim@amb@business@meth@meth_monitoring_cooking@cooking@", "chemical_pour_long_cooker"
     RequestAnimDict(animDict)
 
@@ -222,6 +258,7 @@ AddEventHandler("sharkmeth:cookAnim", function(value)
     DeleteObject(pencil)
     RemoveAnimDict(animDict)
     FreezeEntityPosition(ped, false)
+    isBusy = false
 end)
 
 
@@ -230,6 +267,7 @@ end)
 ------------------------------------------------------------
 RegisterNetEvent("sharkmeth:smashAnim")
 AddEventHandler("sharkmeth:smashAnim", function(value)
+    isBusy = true
     local animDict, animName = 'anim@amb@business@meth@meth_smash_weight_check@', 'break_weigh_char02'
     RequestAnimDict(animDict)
 
@@ -244,18 +282,18 @@ AddEventHandler("sharkmeth:smashAnim", function(value)
     local targetPosition = GetEntityCoords(ped)
     FreezeEntityPosition(ped, true)
     local scenePos, sceneRot = vector3((Config.labs[value].hammerAnim[1]-3.074814), (Config.labs[value].hammerAnim[2]-1.76955), (Config.labs[value].hammerAnim[3])-0.9934), GetEntityRotation(ped) -- 353200l 
-    local netScene1 = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
-    NetworkAddPedToSynchronisedScene(ped, netScene1, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
+    local netScene = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
+    NetworkAddPedToSynchronisedScene(ped, netScene, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
 
     local hammer = CreateObjectNoOffset("w_me_hammer", targetPosition, 1, 1, 0)
-    NetworkAddEntityToSynchronisedScene(hammer, netScene1, animDict, "break_weigh_hammer", 4.0, -8.0, 1)
+    NetworkAddEntityToSynchronisedScene(hammer, netScene, animDict, "break_weigh_hammer", 4.0, -8.0, 1)
     local methtray1 = CreateObjectNoOffset("bkr_prop_meth_tray_01a", targetPosition, 1, 1, 0)
-    NetworkAddEntityToSynchronisedScene(methtray1, netScene1, animDict, "break_weigh_tray01", 4.0, -8.0, 1)
+    NetworkAddEntityToSynchronisedScene(methtray1, netScene, animDict, "break_weigh_tray01", 4.0, -8.0, 1)
     local methtray2 = CreateObjectNoOffset("bkr_prop_meth_smashedtray_01_frag_", targetPosition, 1, 1, 0)
-    NetworkAddEntityToSynchronisedScene(methtray2, netScene1, animDict, "break_weigh_tray01", 4.0, -8.0, 1)
+    NetworkAddEntityToSynchronisedScene(methtray2, netScene, animDict, "break_weigh_tray01", 4.0, -8.0, 1)
     SetEntityVisible(methtray2, false)
 
-    NetworkStartSynchronisedScene(netScene1)
+    NetworkStartSynchronisedScene(netScene)
     Citizen.CreateThread(function() lib.progressBar({duration = 14200, label = "Smashing...", disable = {combat = true, move =  true}}) end)
 
     Wait(4200)
@@ -263,12 +301,13 @@ AddEventHandler("sharkmeth:smashAnim", function(value)
     SetEntityVisible(methtray2, true)
     Wait(10000)
 
-    NetworkStopSynchronisedScene(netScene1)
+    NetworkStopSynchronisedScene(netScene)
     DeleteObject(hammer)
     DeleteObject(methtray1)
     DeleteObject(methtray2)
     FreezeEntityPosition(ped, false)
     RemoveAnimDict(animDict)
+    isBusy = false
 end)
 
 ------------------------------------------------------------
@@ -276,6 +315,7 @@ end)
 ------------------------------------------------------------
 RegisterNetEvent('sharkmeth:cheapAnim')
 AddEventHandler("sharkmeth:cheapAnim", function(type)
+    isBusy = true
     local ped = PlayerPedId()
 
     if type == 'meth' then
@@ -295,7 +335,7 @@ AddEventHandler("sharkmeth:cheapAnim", function(type)
             },
         })
         FreezeEntityPosition(ped, false)
-
+        isBusy = false
     elseif type =='sudo' then
         FreezeEntityPosition(ped, true)
         SetEntityCoords(ped, vector3(Config.CheapMeth.animCoords2))
@@ -314,6 +354,7 @@ AddEventHandler("sharkmeth:cheapAnim", function(type)
             },
         })
         FreezeEntityPosition(ped, false)
+        isBusy = false
     end
 end)
 
@@ -323,6 +364,7 @@ end)
 ------------------------------------------------------------
 RegisterNetEvent("sharkmeth:stealAcid")
 AddEventHandler("sharkmeth:stealAcid", function()
+    isBusy = true
     local ped = PlayerPedId()
     FreezeEntityPosition(ped, true)
     SetEntityCoords(ped, vector3(2663.6753, 1623.3765, 23.6703))
@@ -341,7 +383,8 @@ AddEventHandler("sharkmeth:stealAcid", function()
         },
     })
     FreezeEntityPosition(ped, false)
-    if math.random(5) == 5 then
+    isBusy = false
+    if math.random(3) == 3 then
         lib.notify({title = 'Ouch!', description = 'You burned your hand and yelled in pain!', type = 'error'})
         TriggerServerEvent('sharkmeth:stealAlert')
     end
