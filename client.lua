@@ -100,7 +100,7 @@ ox_target:addBoxZone({
     options = {
         {
             name = 'ox:option1',
-            onSelect = function() TriggerServerEvent('sharkmeth:cheapCook') end,
+            onSelect = function() TriggerServerEvent('sharkmeth:cheapCook', 'meth') end,
             icon = 'fa-solid fa-vial',
             label = 'Cook Crystal Meth',
             canInteract = function(entity, distance, coords, name, bone)
@@ -118,7 +118,7 @@ ox_target:addBoxZone({
     options = {
         {
             name = 'ox:option1',
-            onSelect = function() TriggerServerEvent('sharkmeth:cheapSudo') end,
+            onSelect = function() TriggerServerEvent('sharkmeth:cheapCook', 'sudo') end,
             icon = 'fa-solid fa-flask-vial',
             label = 'Extract Pseudoephedrine',
             canInteract = function(entity, distance, coords, name, bone)
@@ -248,7 +248,7 @@ AddEventHandler("sharkmeth:cookAnim", function(value)
 
     NetworkStartSynchronisedScene(netScene)
     lib.progressBar({
-        duration = 80000, label = "Cooking...",
+        duration = Config.CookTime, label = "Cooking...",
         disable = {combat = true, move =  true}
     })
     NetworkStopSynchronisedScene(netScene)
@@ -323,7 +323,7 @@ AddEventHandler("sharkmeth:cheapAnim", function(type)
         SetEntityCoords(ped, vector3(Config.CheapMeth.animCoords1))
         SetEntityHeading(ped, Config.CheapMeth.animHeading1)
         lib.progressBar({
-            duration = 20000,
+            duration = Config.CheapCookTime,
             label = 'Cooking Meth',
             disable = {
                 move = true,
@@ -341,7 +341,7 @@ AddEventHandler("sharkmeth:cheapAnim", function(type)
         SetEntityCoords(ped, vector3(Config.CheapMeth.animCoords2))
         SetEntityHeading(ped, Config.CheapMeth.animHeading2)
         lib.progressBar({
-            duration = 20000,
+            duration = Config.CheapCookTime,
             label = 'Extracting Sudo',
             disable = {
                 move = true,
@@ -384,7 +384,8 @@ AddEventHandler("sharkmeth:stealAcid", function()
     })
     FreezeEntityPosition(ped, false)
     isBusy = false
-    if math.random(3) == 3 then
+    local BurnChance = math.random(Config.StealChance)
+    if BurnChance == Config.StealChance then
         lib.notify({title = 'Ouch!', description = 'You burned your hand and yelled in pain!', type = 'error'})
         TriggerServerEvent('sharkmeth:stealAlert')
     end
