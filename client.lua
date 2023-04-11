@@ -42,7 +42,7 @@ for k,v in ipairs(Config.labs) do
         options = {
             {
                 name = 'ox:option1',
-                onSelect = function() TriggerServerEvent('sharkmeth:extractSudo', k) end,
+                onSelect = function() TriggerServerEvent('sharkmeth:cookLab', 'sudo') end,
                 icon = 'fa-solid fa-vial',
                 label = 'Extract Pseudoephedrine',
                 canInteract = function(entity, distance, coords, name, bone)
@@ -51,7 +51,7 @@ for k,v in ipairs(Config.labs) do
             },
             {
                 name = 'ox:option2',
-                onSelect = function() TriggerServerEvent('sharkmeth:extractPhos', k) end,
+                onSelect = function() TriggerServerEvent('sharkmeth:cookLab', 'phos') end,
                 icon = 'fa-solid fa-flask',
                 label = 'Extract Phosphorus',
                 canInteract = function(entity, distance, coords, name, bone)
@@ -60,7 +60,7 @@ for k,v in ipairs(Config.labs) do
             },
             {
                 name = 'ox:option3',
-                onSelect = function() TriggerServerEvent('sharkmeth:cookMeth', k)end,
+                onSelect = function() TriggerServerEvent('sharkmeth:cookLab', k, 'meth')end,
                 icon = 'fa-solid fa-flask-vial',
                 label = 'Cook Crystal Meth',
                 canInteract = function(entity, distance, coords, name, bone)
