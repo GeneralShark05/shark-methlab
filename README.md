@@ -11,38 +11,33 @@ An advanced meth-making script based on real life methods!
 - BobIPL (Optional - Change in Config)
 
 ## Items Needed:
-
 ### id - Name
-* empty_container - Empty Container
-* iodine - Bottle of Iodine/Iodine Tablets/Up to you
-* acetone - Acetone/Nail Polish Remover/Up to you
+* acetone - Acetone/Nail Polish Remover
 * antifreeze - Antifreeze
+* coughmeds - Cough Medication
+* empty_container - Empty Container
 * fertilizer - Fertilizer
 * fueldrugs - Leaded Gasoline
-* coughmeds - Cough Medication
-* sulph - Sulphuric Acid
-* phos - Phosphuric Acid
-* sudo - Pseudoephedrine
-* meth_pure - Meth Tray
+* iodine - Bottle of Iodine/Iodine Tablets
 * meth_brick - Bag of Meth/Brick of Meth
-* plasticwrap - Saran Wrap
-* WEAPON_HAMMER - Hammer
+* meth_pure - Meth Tray
+* phos - Phosphuric Acid
+* plasticwrap - Plastic Wrap
+* sulph - Sulphuric Acid
+* sudo - Pseudoephedrine
 
 ## Making Meth
+Prep Lab First - Valid for 3 Extractions/Cooks
 - Pseudoephedrine
-1. Prep Lab
-2. Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
+Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
 - Phosphuric Acid
-1. Steal Sulphuric Acid from the Power Station
-2. Prep Lab
-3. Extract Phosphuric Acid with Sulphuric Acid, Fertilizer, and Antifreeze
+Steal Sulphuric Acid from the Power Station
+Extract Phosphuric Acid with Sulphuric Acid, Fertilizer, and Antifreeze
 - Cook Meth
-1. Prep Lab 
-2. Combine Phosphuric Acid, Sudophedrine, and Iodine to create a tray of unbroken Methamphetamine
-3. Break Methamphetamine with hammer and Plastic Wrap to get a brick/bag of Methamphetamine.
+Combine Phosphuric Acid, Sudophedrine, and Iodine to create a tray of unbroken Methamphetamine
+Break Methamphetamine with hammer and Plastic Wrap to get a brick/bag of Methamphetamine.
 
 ### Thanks to:
-
-- Stachy225 - For providing the awesome Meth-Cooking animation, saved so much time and so appreciated.
+- Stachy225 - For providing the snippet of the Meth-Cooking animation.
 
 [Support - Discord](https://discord.gg/mFnNTV2Zce)
