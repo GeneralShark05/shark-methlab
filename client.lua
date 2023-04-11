@@ -192,22 +192,21 @@ AddEventHandler("sharkmeth:cookAnim", function(value)
 
     local ped = PlayerPedId()
     SetEntityCoords(ped, vector3(Config.labs[value].cookAnim))
+    SetEntityHeading(ped, Configlabs[value].cookH)
     Citizen.Wait(1)
+
     local targetPosition = GetEntityCoords(ped)
     FreezeEntityPosition(ped, true)
-    local scenePos, sceneRot = vector3((Config.labs[value].cookAnim[1] +4.883), (Config.labs[value].cookAnim[2]+1.957), (Config.labs[value].cookAnim[3]-0.401)), vector3(0.0, 0.0, 0.0) -- 353200l 
+    local scenePos, sceneRot = vector3((Config.labs[value].cookAnim[1] +4.883), (Config.labs[value].cookAnim[2]+1.957), (Config.labs[value].cookAnim[3]-0.401)), GetEntityRotation(ped) -- 353200l 
     local netScene = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(ped, netScene, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
 
     local sacid = CreateObjectNoOffset("bkr_prop_meth_sacid", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(sacid, netScene, animDict, "chemical_pour_long_sacid", 4.0, -8.0, 1)
-
     local ammonia = CreateObjectNoOffset("bkr_prop_meth_ammonia", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(ammonia, netScene, animDict, "chemical_pour_long_ammonia", 4.0, -8.0, 1)
-
     local clipboard = CreateObjectNoOffset("bkr_prop_fakeid_clipboard_01a", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(clipboard, netScene, animDict, "chemical_pour_long_clipboard", 4.0, -8.0, 1)
-
     local pencil = CreateObjectNoOffset("prop_pencil_01", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(pencil, netScene, animDict, "chemical_pour_long_pencil", 4.0, -8.0, 1)
 
@@ -240,19 +239,18 @@ AddEventHandler("sharkmeth:smashAnim", function(value)
 
     local ped = PlayerPedId()
     SetEntityCoords(ped, vector3(Config.labs[value].hammerAnim))
+    SetEntityHeading(ped, Configlabs[value].hammerH)
     Citizen.Wait(1)
     local targetPosition = GetEntityCoords(ped)
     FreezeEntityPosition(ped, true)
-    local scenePos, sceneRot = vector3((Config.labs[value].hammerAnim[1]-3.074814), (Config.labs[value].hammerAnim[2]-1.76955), (Config.labs[value].hammerAnim[3])-0.9934), vector3(0.00, 0.00, 0.00) -- 353200l 
+    local scenePos, sceneRot = vector3((Config.labs[value].hammerAnim[1]-3.074814), (Config.labs[value].hammerAnim[2]-1.76955), (Config.labs[value].hammerAnim[3])-0.9934), GetEntityRotation(ped) -- 353200l 
     local netScene1 = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(ped, netScene1, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
 
     local hammer = CreateObjectNoOffset("w_me_hammer", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(hammer, netScene1, animDict, "break_weigh_hammer", 4.0, -8.0, 1)
-
     local methtray1 = CreateObjectNoOffset("bkr_prop_meth_tray_01a", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(methtray1, netScene1, animDict, "break_weigh_tray01", 4.0, -8.0, 1)
-
     local methtray2 = CreateObjectNoOffset("bkr_prop_meth_smashedtray_01_frag_", targetPosition, 1, 1, 0)
     NetworkAddEntityToSynchronisedScene(methtray2, netScene1, animDict, "break_weigh_tray01", 4.0, -8.0, 1)
     SetEntityVisible(methtray2, false)
