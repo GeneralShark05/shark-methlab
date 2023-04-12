@@ -25,7 +25,7 @@ Config.labs = { -- Privately controlled labs, fair warning, Changing the heading
 	[1] = { -- bobipl Lab
 		cookTarget = {1005.7503662109, -3200.8913574219, -38.209575653076}, cookAnim = {1005.773, -3200.402, -38.524}, cookH = 180, -- Cooking
 		hammerTarget = {1012.2446289063, -3194.1000976563, -39.192222595215}, hammerRotate = 0, hammerAnim = {1012.0938, -3194.8188, -38.9931}, hammerH = 0, -- Breaking Table
-		prepTarget = {1006.8984985352, -3197.7546386719, -38.5}, prepRotate = -5, -- Control Panel
+		prepTarget = {1006.8984985352, -3197.7546386719, -38.5}, prepRotate = 355, -- Control Panel
 		cookState = 0, prepState = 0, count = 0 -- Dont change unless you want to be castrated
 	},
 }
