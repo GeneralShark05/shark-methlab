@@ -228,7 +228,7 @@ AddEventHandler("sharkmeth:cookAnim", function(value)
 
     local ped = PlayerPedId()
     SetEntityCoords(ped, vector3(Config.labs[value].cookAnim))
-    SetEntityHeading(ped, Configlabs[value].cookH)
+    SetEntityHeading(ped, Config.labs[value].cookH)
     Citizen.Wait(1)
 
     local targetPosition = GetEntityCoords(ped)
@@ -277,11 +277,11 @@ AddEventHandler("sharkmeth:smashAnim", function(value)
 
     local ped = PlayerPedId()
     SetEntityCoords(ped, vector3(Config.labs[value].hammerAnim))
-    SetEntityHeading(ped, Configlabs[value].hammerH)
+    SetEntityHeading(ped, Config.labs[value].hammerH)
     Citizen.Wait(1)
     local targetPosition = GetEntityCoords(ped)
     FreezeEntityPosition(ped, true)
-    local scenePos, sceneRot = vector3((Config.labs[value].hammerAnim[1]-3.074814), (Config.labs[value].hammerAnim[2]-1.76955), (Config.labs[value].hammerAnim[3])-0.9934), GetEntityRotation(ped) -- 353200l 
+    local scenePos, sceneRot = vector3((Config.labs[value].hammerAnim[1]-3.074814), (Config.labs[value].hammerAnim[2]-1.76955), (Config.labs[value].hammerAnim[3])-0.9934), vector3(GetEntityRotation(ped)) -- 353200l 
     local netScene = NetworkCreateSynchronisedScene(scenePos, sceneRot, 2, false, false, 1065353216, 0, 1.3)
     NetworkAddPedToSynchronisedScene(ped, netScene, animDict, animName, 1.5, -4.0, 1, 16, 1148846080, 0)
 
