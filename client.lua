@@ -1,7 +1,7 @@
 local ox_inventory = exports.ox_inventory
 local ox_target = exports.ox_target
 local isBusy = false
-
+local localSet = Locales[Config.Lang]
 -------------------------------------------------------
 -- Targetting  --
 ------------------------------------------------------------
@@ -17,7 +17,7 @@ for k,v in ipairs(Config.labs) do
                 name = 'prepcook',
                 onSelect = function() TriggerEvent('sharkmeth:prepAnim', k) end,
                 icon = 'fa-solid fa-clipboard',
-                label = 'Prep Lab Equipment',
+                label = localSet.TargetPrep,
                 canInteract = function(entity, distance, coords, name, bone)
                     return not isBusy
                 end
@@ -26,7 +26,7 @@ for k,v in ipairs(Config.labs) do
                 name = 'ox:option1',
                 onSelect = function() TriggerServerEvent('sharkmeth:collect', k) end,
                 icon = 'fa-solid fa-hard-drive',
-                label = 'Collect Product',
+                label = localSet.TargetGrab,
                 canInteract = function(entity, distance, coords, name, bone)
                     return not isBusy
                 end
@@ -44,7 +44,7 @@ for k,v in ipairs(Config.labs) do
                 name = 'ox:option1',
                 onSelect = function() TriggerServerEvent('sharkmeth:cookLab', k, 'sudo') end,
                 icon = 'fa-solid fa-vial',
-                label = 'Extract Pseudoephedrine',
+                label = localSet.TargetSudo,
                 canInteract = function(entity, distance, coords, name, bone)
                     return not isBusy
                 end
@@ -53,7 +53,7 @@ for k,v in ipairs(Config.labs) do
                 name = 'ox:option2',
                 onSelect = function() TriggerServerEvent('sharkmeth:cookLab', k, 'phos') end,
                 icon = 'fa-solid fa-flask',
-                label = 'Extract Phosphorus',
+                label = localSet.TargetPhos,
                 canInteract = function(entity, distance, coords, name, bone)
                     return not isBusy
                 end
@@ -62,7 +62,7 @@ for k,v in ipairs(Config.labs) do
                 name = 'ox:option3',
                 onSelect = function() TriggerServerEvent('sharkmeth:cookLab', k, 'meth')end,
                 icon = 'fa-solid fa-flask-vial',
-                label = 'Cook Crystal Meth',
+                label = localSet.TargetCook,
                 canInteract = function(entity, distance, coords, name, bone)
                     return not isBusy
                 end
@@ -81,7 +81,7 @@ for k,v in ipairs(Config.labs) do
                 name = 'ox:option1',
                 onSelect = function() TriggerServerEvent('sharkmeth:smashServer', k)end,
                 icon = 'fa-solid fa-hammer',
-                label = 'Break Meth',
+                label = localSet.TargetSmash,
                 canInteract = function(entity, distance, coords, name, bone)
                     return not isBusy
                 end
@@ -101,7 +101,7 @@ ox_target:addBoxZone({
             name = 'ox:option1',
             onSelect = function() TriggerServerEvent('sharkmeth:cheapCook', 'meth') end,
             icon = 'fa-solid fa-vial',
-            label = 'Cook Crystal Meth',
+            label = localSet.TargetCook,
             canInteract = function(entity, distance, coords, name, bone)
                 return not isBusy
             end
@@ -119,7 +119,7 @@ ox_target:addBoxZone({
             name = 'ox:option1',
             onSelect = function() TriggerServerEvent('sharkmeth:cheapCook', 'sudo') end,
             icon = 'fa-solid fa-flask-vial',
-            label = 'Extract Pseudoephedrine',
+            label = localSet.TargetSudo,
             canInteract = function(entity, distance, coords, name, bone)
                 return not isBusy
             end
@@ -137,7 +137,7 @@ ox_target:addSphereZone({
             name = 'ox:option1',
             onSelect = function() TriggerServerEvent('sharkmeth:stealSulph')end,
             icon = 'fa-solid fa-faucet-drip',
-            label = 'Steal Sulphuric Acid',
+            label = localSet.TargetSulph,
             canInteract = function(entity, distance, coords, name, bone)
                 return not isBusy
             end
@@ -148,16 +148,7 @@ ox_target:addSphereZone({
 -- Notifs --
 ------------------------------------------------------------
 RegisterNetEvent("sharkmeth:notify", function(type)
-    local notification = {
-        ['prepfail'] = {title = 'Equipment Not Prepped', description = 'Prep failed, try again? Has the equipment already bene prepped?', type = 'error'},
-        ['prepsuccess'] = {title = 'Equipment Ready', description = 'Ready to cook.', type = 'success'},
-        ['cookfail'] = {title = 'Can\'t Cook', description = 'You\'re missing something, an ingredient? Is the equipment ready?', type = 'error'},
-        ['cooksuccess'] = {title = 'Cook Complete', description = 'Your product is ready to collect.', type = 'success'},
-        ['smashfail'] = {title = 'Can\'t Break', description = 'You\'re missing something...', type = 'error'},
-        ['collecterror'] = {title = 'Can\'t Collect', description = 'Nothing to collect', type = 'error'},
-        ['stealfail'] = {title = 'Can\t Steal', description = '...You can\'t just pour sulphuric acid in your pocket', type = 'error'}
-    }
-    return lib.notify({title = notification[type].title, description = notification[type].description, type = notification[type].type})
+    return lib.notify({title = localSet[type][1], description = localSet[type][2], type = localSet[type][3]})
 end)
 ------------------------------------------------------------
 -- Debug --
@@ -201,10 +192,10 @@ AddEventHandler("sharkmeth:prepAnim", function(value)
     TriggerEvent('ultra-voltlab', 45, function(result)
         Wait(2000)
         if result == 1 then
-            TriggerEvent('sharkmeth:notify', 'prepsuccess')
+            TriggerEvent('sharkmeth:notify', 'NotifPrepSuc')
             TriggerServerEvent('sharkmeth:localSet', 1, value)
         else
-            TriggerEvent('sharkmeth:notify', 'prepfail')
+            TriggerEvent('sharkmeth:notify', 'NotifPrepFai')
         end
         ClearPedTasks(ped)
         TaskPlayAnim(ped, animDict, 'hack_outro', 8.0, 8.0, -1, 0, 0)
@@ -247,10 +238,7 @@ AddEventHandler("sharkmeth:cookAnim", function(value)
     NetworkAddEntityToSynchronisedScene(pencil, netScene, animDict, "chemical_pour_long_pencil", 4.0, -8.0, 1)
 
     NetworkStartSynchronisedScene(netScene)
-    lib.progressBar({
-        duration = Config.CookTime, label = "Cooking...",
-        disable = {combat = true, move =  true}
-    })
+    lib.progressBar({duration = Config.CookTime, label = localSet.ProgCook, disable = {combat = true, move =  true}})
     NetworkStopSynchronisedScene(netScene)
     DeleteObject(sacid)
     DeleteObject(ammonia)
@@ -292,7 +280,7 @@ AddEventHandler("sharkmeth:smashAnim", function(value)
     SetEntityVisible(methtray2, false)
 
     NetworkStartSynchronisedScene(netScene)
-    Citizen.CreateThread(function() lib.progressBar({duration = 14200, label = "Smashing...", disable = {combat = true, move =  true}}) end)
+    Citizen.CreateThread(function() lib.progressBar({duration = 14200, label = localSet.ProgSmash, disable = {combat = true, move =  true}}) end)
 
     Wait(4200)
     SetEntityVisible(methtray1, false)
@@ -317,11 +305,11 @@ AddEventHandler("sharkmeth:cheapAnim", function(type)
 
     if type == 'meth' then
         FreezeEntityPosition(ped, true)
-        SetEntityCoords(ped, vector3(Config.CheapMeth.animCoords1))
-        SetEntityHeading(ped, Config.CheapMeth.animHeading1)
+        SetEntityCoords(ped, vector3(Config.cheapMeth.animCoords1))
+        SetEntityHeading(ped, Config.cheapMeth.animHeading1)
         lib.progressBar({
             duration = Config.CheapCookTime,
-            label = 'Cooking Meth',
+            label = localSet.ProgCook,
             disable = {
                 move = true,
                 combat = true,
@@ -335,11 +323,11 @@ AddEventHandler("sharkmeth:cheapAnim", function(type)
         isBusy = false
     elseif type =='sudo' then
         FreezeEntityPosition(ped, true)
-        SetEntityCoords(ped, vector3(Config.CheapMeth.animCoords2))
-        SetEntityHeading(ped, Config.CheapMeth.animHeading2)
+        SetEntityCoords(ped, vector3(Config.cheapMeth.animCoords2))
+        SetEntityHeading(ped, Config.cheapMeth.animHeading2)
         lib.progressBar({
             duration = Config.CheapCookTime,
-            label = 'Extracting Sudo',
+            label = localSet.ProgExt,
             disable = {
                 move = true,
                 combat = true,
@@ -366,7 +354,7 @@ AddEventHandler("sharkmeth:stealAcid", function()
     SetEntityHeading(ped, 90)
     lib.progressCircle({
         duration = 10000,
-        label = 'Stealing Sulphuric Acid',
+        label = localSet.ProgSteal,
         anim = {
             dict = 'timetable@gardener@filling_can',
             clip = 'gar_ig_5_filling_can'
@@ -379,9 +367,9 @@ AddEventHandler("sharkmeth:stealAcid", function()
     })
     FreezeEntityPosition(ped, false)
     isBusy = false
-    local BurnChance = math.random(Config.StealChance)
-    if BurnChance == Config.StealChance then
-        lib.notify({title = 'Ouch!', description = 'You burned your hand and yelled in pain!', type = 'error'})
+    local BurnChance = math.random(100)
+    if BurnChance <= Config.StealChance then
+        lib.notify({title = localSet.NotifStealBurn[1], description = localSet.NotifStealBurn[2], type = localSet.NotifStealBurn[3]})
         TriggerServerEvent('sharkmeth:stealAlert')
     end
 end)

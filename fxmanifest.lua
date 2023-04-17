@@ -11,9 +11,17 @@ dependencies { 'ox_lib', 'ox_target', 'ox_inventory', 'ultra-voltlab' }
 
 shared_scripts {
     '@ox_lib/init.lua',
-    'config.lua'
+    'config.lua',
+    'locales.lua',
 }
 
 client_script "client.lua"
 
 server_script "server.lua"
+
+escrow_ignore {
+    'server.lua',
+    'config.lua',
+    'locales.lua',
+    'client.lua',
+  }

@@ -1,3 +1,4 @@
+local localSet = Locales[Config.Lang]
 ------------------------------------------------------------
 -- Startup --
 ------------------------------------------------------------
@@ -5,10 +6,9 @@ local ox_inventory = exports.ox_inventory
 
 local outcome = {
     [2] = {item = 'sudo', count = Config.CookSudo}, -- Normal Sudo
-    [3] = {item = 'phos', count = 4}, -- Normal Phos
+    [3] = {item = 'phos', count = Config.CookPhos}, -- Normal Phos
     [4] = {item = 'meth_pure', count = Config.CookReward}, -- Normal Batch
 }
-
 ------------------------------------------------------------
 -- Prep Lab --
 ------------------------------------------------------------
@@ -16,7 +16,7 @@ RegisterServerEvent('sharkmeth:localSet')
 AddEventHandler('sharkmeth:localSet', function(type, value)
     local src = source
     if Config.labs[value].cookState >= type then
-        return TriggerClientEvent('sharkmeth:notify', src, 'prepfail')
+        return TriggerClientEvent('sharkmeth:notify', src, 'NotifPrepSuc')
     else
         Config.labs[value].cookState = type
     end
@@ -37,10 +37,10 @@ AddEventHandler('sharkmeth:cookLab', function(value, type)
             ox_inventory:RemoveItem(src, 'phos', 1)
             ox_inventory:RemoveItem(src, 'iodine', 5)
             Citizen.Wait(CookTime)
-            TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
+            TriggerClientEvent('sharkmeth:notify', src, 'NotifCookSuc')
             Config.labs[value].cookState = 4
         else
-            return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
         end
     elseif type == 'sudo' then
         local items = ox_inventory:Search(src, 'count', {'acetone', 'fueldrugs', 'coughmeds'})
@@ -51,10 +51,10 @@ AddEventHandler('sharkmeth:cookLab', function(value, type)
             ox_inventory:RemoveItem(src, 'fueldrugs', 5)
             ox_inventory:RemoveItem(src, 'coughmeds', 10)
             Citizen.Wait(CookTime)
-            TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
+            TriggerClientEvent('sharkmeth:notify', src, 'NotifCookSuc')
             Config.labs[value].cookState = 2
         else
-            return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
         end
     elseif type == 'phos' then 
         local items = ox_inventory:Search(src, 'count', {'fertilizer', 'antifreeze', 'sulph'})
@@ -65,11 +65,11 @@ AddEventHandler('sharkmeth:cookLab', function(value, type)
             ox_inventory:RemoveItem(src, 'antifreeze', 4)
             ox_inventory:RemoveItem(src, 'fertilizer', 5)
             Citizen.Wait(CookTime)
-            TriggerClientEvent('sharkmeth:notify', src, 'cooksuccess')
+            TriggerClientEvent('sharkmeth:notify', src, 'NotifCookSuc')
             ox_inventory:AddItem(src, 'empty_container', 1)
             Config.labs[value].cookState = 3
         else
-            return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
         end
     end
 end)
@@ -89,7 +89,7 @@ AddEventHandler('sharkmeth:collect', function(value)
             Config.labs[value].count = Config.labs[value].count + 1
         end
     else
-        return TriggerClientEvent('sharkmeth:notify', src, 'collecterror')
+        return TriggerClientEvent('sharkmeth:notify', src, 'NotifCollectFai')
     end
 end)
 
@@ -111,7 +111,7 @@ AddEventHandler('sharkmeth:smashServer', function(value)
         Citizen.Wait(14200)
         ox_inventory:AddItem(src, 'meth_brick', breakCount)
     else
-        TriggerClientEvent('sharkmeth:notify', src, 'smashfail')
+        TriggerClientEvent('sharkmeth:notify', src, 'NotifSmashFai')
     end
 end)
 ------------------------------------------------------------
@@ -131,7 +131,7 @@ AddEventHandler('sharkmeth:cheapCook', function(type)
             Citizen.Wait(CookTime)
             ox_inventory:AddItem(src, 'sudo', Config.CookSudo)
         else
-            return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
         end
     elseif type == 'meth' then
         local items = ox_inventory:Search(src, 'count', {'sudo', 'WEAPON_FLARE', 'iodine'})
@@ -143,7 +143,7 @@ AddEventHandler('sharkmeth:cheapCook', function(type)
             Citizen.Wait(CookTime)
             ox_inventory:AddItem(src, 'meth_brick', Config.CheapReward)
         else
-            return TriggerClientEvent('sharkmeth:notify', src, 'cookfail')
+            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
         end
     end
 end)
@@ -161,7 +161,7 @@ AddEventHandler('sharkmeth:stealSulph', function()
         ox_inventory:RemoveItem(src, 'empty_container', 1)
         ox_inventory:AddItem(src, 'sulph', 1)
     else
-        TriggerClientEvent('sharkmeth:notify', src, 'stealfail')
+        TriggerClientEvent('sharkmeth:notify', src, 'NotifStealFai')
     end
 end)
 
@@ -193,14 +193,14 @@ end,
 
 RegisterServerEvent('sharkmeth:buyAlert')
 AddEventHandler('sharkmeth:buyAlert', function(streetname, postal, item)
-    local callChance = math.random(Config.BuyChance)
-    if callChance == Config.BuyChance then
+    local callChance = math.random(100)
+    if callChance <= Config.BuyChance then
         exports.sonorancad:performApiRequest({{
             ["serverId"] = GetConvar("sonoran_serverId", 1),
             ["isEmergency"] = true,
-            ["caller"] = 'Store Manager',
+            ["caller"] = localSet.AlertBuy[1],
             ["location"] = '['..postal..'] '..streetname,
-            ["description"] = 'Hi there, we have an individual here who has purchased a suspicious amount of '..item..'. We believe they may be involved with criminal activity.',
+            ["description"] = localSet.AlertBuy[2]..item..localSet.AlertBuy[3],
             ["metaData"] = {
                 ["postal"] = postal
             }
@@ -214,9 +214,9 @@ AddEventHandler('sharkmeth:stealAlert', function()
         exports.sonorancad:performApiRequest({{
             ["serverId"] = GetConvar("sonoran_serverId", 1),
             ["isEmergency"] = true,
-            ["caller"] = 'Bobcat Security',
-            ["location"] = '[343] Palmer-Taylor Power Station',
-            ["description"] = 'This is security from the Palmer-Taylor Power Station, we heard someone yelling and believe there may be a trespasser on the property.',
+            ["caller"] = localSet.AlertSteal[1],
+            ["location"] = localSet.AlertSteal[2],
+            ["description"] = localSet.AlertSteal[3],
             ["metaData"] = {
                 ["postal"] = 343
             }
