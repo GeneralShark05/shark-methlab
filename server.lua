@@ -30,7 +30,7 @@ AddEventHandler('sharkmeth:cookLab', function(value, type)
     local CookTime = Config.CookTime
     if type == 'meth' then
         local items = ox_inventory:Search(src, 'count', {'sudo', 'phos', 'iodine'})
-        if (items and items.sudo > 1 and items.phos >= 1 and items.iodine > 4) or Config.ItemDebug and Config.labs[value].cookState == 1 then
+        if (items and items.sudo >= 2 and items.phos >= 1 and items.iodine >= 5) or Config.ItemDebug and Config.labs[value].cookState == 1 then
             Config.labs[value].cookState = 0
             TriggerClientEvent("sharkmeth:cookAnim", src, value)
             ox_inventory:RemoveItem(src, 'sudo', 2)
@@ -44,7 +44,7 @@ AddEventHandler('sharkmeth:cookLab', function(value, type)
         end
     elseif type == 'sudo' then
         local items = ox_inventory:Search(src, 'count', {'acetone', 'fueldrugs', 'coughmeds'})
-        if (items and items.acetone > 2 and items.fueldrugs > 4 and items.coughmeds > 9) or Config.ItemDebug and Config.labs[value].cookState == 1 then
+        if (items and items.acetone >= 3 and items.fueldrugs >= 5 and items.coughmeds >= 10) or Config.ItemDebug and Config.labs[value].cookState == 1 then
             Config.labs[value].cookState = 0
             TriggerClientEvent("sharkmeth:cookAnim", src, value)
             ox_inventory:RemoveItem(src, 'acetone', 3)
@@ -58,7 +58,7 @@ AddEventHandler('sharkmeth:cookLab', function(value, type)
         end
     elseif type == 'phos' then 
         local items = ox_inventory:Search(src, 'count', {'fertilizer', 'antifreeze', 'sulph'})
-        if (items and items.fertilizer > 4 and items.antifreeze > 3 and items.sulph >= 1) or Config.ItemDebug and Config.labs[value].cookState == 1 then
+        if (items and items.fertilizer >= 5 and items.antifreeze >= 4 and items.sulph >= 1) or Config.ItemDebug and Config.labs[value].cookState == 1 then
             Config.labs[value].cookState = 0
             TriggerClientEvent("sharkmeth:cookAnim", src, value)
             ox_inventory:RemoveItem(src, 'sulph', 1)
@@ -123,7 +123,7 @@ AddEventHandler('sharkmeth:cheapCook', function(type)
     local CookTime = Config.CheapCookTime
     if type == 'sudo' then
         local items = ox_inventory:Search(src, 'count', {'acetone', 'water', 'coughmeds'})
-        if (items and items.acetone > 2 and items.water > 9 and items.coughmeds > 24) or Config.ItemDebug then
+        if (items and items.acetone >= 3 and items.water >= 10 and items.coughmeds >= 25) or Config.ItemDebug then
             TriggerClientEvent('sharkmeth:cheapAnim', src, 'sudo')
             ox_inventory:RemoveItem(src, 'acetone', 3)
             ox_inventory:RemoveItem(src, 'water', 10)
@@ -135,7 +135,7 @@ AddEventHandler('sharkmeth:cheapCook', function(type)
         end
     elseif type == 'meth' then
         local items = ox_inventory:Search(src, 'count', {'sudo', 'WEAPON_FLARE', 'iodine'})
-        if (items and items.sudo > 1 and items.WEAPON_FLARE > 4 and items.iodine > 9) or Config.ItemDebug then
+        if (items and items.sudo >= 1 and items.WEAPON_FLARE >= 5 and items.iodine >= 10) or Config.ItemDebug then
             TriggerClientEvent('sharkmeth:cheapAnim', src, 'meth')
             ox_inventory:RemoveItem(src, 'sudo', 1)
             ox_inventory:RemoveItem(src, 'WEAPON_FLARE', 5)
@@ -156,9 +156,9 @@ AddEventHandler('sharkmeth:stealSulph', function()
     local src = source
     local items = ox_inventory:Search(src, 'count', 'empty_container')
     if items >= 1 then
+        ox_inventory:RemoveItem(src, 'empty_container', 1)
         TriggerClientEvent('sharkmeth:stealAcid', src)
         Citizen.Wait(10000)
-        ox_inventory:RemoveItem(src, 'empty_container', 1)
         ox_inventory:AddItem(src, 'sulph', 1)
     else
         TriggerClientEvent('sharkmeth:notify', src, 'NotifStealFai')

@@ -10,6 +10,11 @@ An advanced meth-making script based on real life methods!
 - SonoranCAD (Optional - Change in Config)
 - BobIPL (Optional - Change in Config)
 
+## Installation:
+1. Add necessary items to ox_inventory/data/items.lua
+2. Ensure necessary dependencies before shark-methlab
+3. Start shark-methlab
+
 ## Items Needed:
 ### id - Name
 * acetone - Acetone/Nail Polish Remover
