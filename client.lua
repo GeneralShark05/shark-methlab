@@ -1,7 +1,6 @@
-local ox_inventory = exports.ox_inventory
 local ox_target = exports.ox_target
-local isBusy = false
 local localSet = Locales[Config.Lang]
+local isBusy = false
 -------------------------------------------------------
 -- Targetting  --
 ------------------------------------------------------------
@@ -144,12 +143,7 @@ ox_target:addSphereZone({
         }
     }
 })
-------------------------------------------------------------
--- Notifs --
-------------------------------------------------------------
-RegisterNetEvent("sharkmeth:notify", function(type)
-    return lib.notify({title = localSet[type][1], description = localSet[type][2], type = localSet[type][3]})
-end)
+
 ------------------------------------------------------------
 -- Debug --
 ------------------------------------------------------------
@@ -192,10 +186,10 @@ AddEventHandler("sharkmeth:prepAnim", function(value)
     TriggerEvent('ultra-voltlab', 45, function(result)
         Wait(2000)
         if result == 1 then
-            TriggerEvent('sharkmeth:notify', 'NotifPrepSuc')
-            TriggerServerEvent('sharkmeth:localSet', 1, value)
+            lib.notify({title = localSet.NotifPrepSuc[1], description = localSet.NotifPrepSuc[2], type = localSet.NotifPrepSuc[3]})
+            TriggerServerEvent('sharkmeth:labSet', 1, value)
         else
-            TriggerEvent('sharkmeth:notify', 'NotifPrepFai')
+            lib.notify({title = localSet.NotifPrepFai[1], description = localSet.NotifPrepFai[2], type = localSet.NotifPrepFai[3]})
         end
         ClearPedTasks(ped)
         TaskPlayAnim(ped, animDict, 'hack_outro', 8.0, 8.0, -1, 0, 0)

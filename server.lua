@@ -4,7 +4,7 @@ local localSet = Locales[Config.Lang]
 ------------------------------------------------------------
 local ox_inventory = exports.ox_inventory
 
-local outcome = {
+local outcome = { -- Different outcomes, outcome 0 is Nil, 1 is Prepped
     [2] = {item = 'sudo', count = Config.CookSudo}, -- Normal Sudo
     [3] = {item = 'phos', count = Config.CookPhos}, -- Normal Phos
     [4] = {item = 'meth_pure', count = Config.CookReward}, -- Normal Batch
@@ -12,11 +12,11 @@ local outcome = {
 ------------------------------------------------------------
 -- Prep Lab --
 ------------------------------------------------------------
-RegisterServerEvent('sharkmeth:localSet')
-AddEventHandler('sharkmeth:localSet', function(type, value)
+RegisterServerEvent('sharkmeth:labSet')
+AddEventHandler('sharkmeth:labSet', function(type, value)
     local src = source
-    if Config.labs[value].cookState >= type then
-        return TriggerClientEvent('sharkmeth:notify', src, 'NotifPrepSuc')
+    if Config.labs[value].cookState >= type then -- If the lab is set to a status greater or equal to, prevents overridding
+        return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifPrepFai[1], description = localSet.NotifPrepFai[2], type = localSet.NotifPrepFai[3]})
     else
         Config.labs[value].cookState = type
     end
@@ -28,52 +28,67 @@ RegisterServerEvent('sharkmeth:cookLab')
 AddEventHandler('sharkmeth:cookLab', function(value, type)
     local src = source
     local CookTime = Config.CookTime
-    if type == 'meth' then
-        local items = ox_inventory:Search(src, 'count', {'sudo', 'phos', 'iodine'})
-        if (items and items.sudo >= 2 and items.phos >= 1 and items.iodine >= 5) or Config.ItemDebug and Config.labs[value].cookState == 1 then
-            Config.labs[value].cookState = 0
-            TriggerClientEvent("sharkmeth:cookAnim", src, value)
-            ox_inventory:RemoveItem(src, 'sudo', 2)
-            ox_inventory:RemoveItem(src, 'phos', 1)
-            ox_inventory:RemoveItem(src, 'iodine', 5)
-            Citizen.Wait(CookTime)
-            TriggerClientEvent('sharkmeth:notify', src, 'NotifCookSuc')
-            Config.labs[value].cookState = 4
-        else
-            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
+    if Config.labs[value].cookState == 1 and Config.labs[value].activeCook == false then
+        if type == 'meth' then
+            local items = ox_inventory:Search(src, 'count', {'sudo', 'phos', 'iodine'})
+            if (items and items.sudo >= 2 and items.phos >= 1 and items.iodine >= 5) or Config.ItemDebug then
+                Config.labs[value].cookState = 0
+                Config.labs[value].activeCook = true
+
+                TriggerClientEvent("sharkmeth:cookAnim", src, value)
+                ox_inventory:RemoveItem(src, 'sudo', 2)
+                ox_inventory:RemoveItem(src, 'phos', 1)
+                ox_inventory:RemoveItem(src, 'iodine', 5)
+                Citizen.Wait(CookTime)
+                TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookSuc[1], description = localSet.NotifCookSuc[2], type = localSet.NotifCookSuc[3]})
+
+                Config.labs[value].activeCook = false
+                Config.labs[value].cookState = 4
+            else
+                return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
+            end
+        elseif type == 'sudo' then
+            local items = ox_inventory:Search(src, 'count', {'acetone', 'fueldrugs', 'coughmeds'})
+            if (items and items.acetone >= 3 and items.fueldrugs >= 5 and items.coughmeds >= 10) or Config.ItemDebug then
+                Config.labs[value].cookState = 0
+                Config.labs[value].activeCook = true
+
+                TriggerClientEvent("sharkmeth:cookAnim", src, value)
+                ox_inventory:RemoveItem(src, 'acetone', 3)
+                ox_inventory:RemoveItem(src, 'fueldrugs', 5)
+                ox_inventory:RemoveItem(src, 'coughmeds', 10)
+                Citizen.Wait(CookTime)
+                TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookSuc[1], description = localSet.NotifCookSuc[2], type = localSet.NotifCookSuc[3]})
+
+                Config.labs[value].activeCook = false
+                Config.labs[value].cookState = 2
+            else
+                return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
+            end
+        elseif type == 'phos' then 
+            local items = ox_inventory:Search(src, 'count', {'fertilizer', 'antifreeze', 'sulph'})
+            if (items and items.fertilizer >= 5 and items.antifreeze >= 4 and items.sulph >= 1) or Config.ItemDebug then
+                Config.labs[value].cookState = 0
+                Config.labs[value].activeCook = true
+
+                TriggerClientEvent("sharkmeth:cookAnim", src, value)
+                ox_inventory:RemoveItem(src, 'sulph', 1)
+                ox_inventory:RemoveItem(src, 'antifreeze', 4)
+                ox_inventory:RemoveItem(src, 'fertilizer', 5)
+                Citizen.Wait(CookTime)
+                TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookSuc[1], description = localSet.NotifCookSuc[2], type = localSet.NotifCookSuc[3]})
+
+                ox_inventory:AddItem(src, 'empty_container', 1)
+                Config.labs[value].activeCook = false
+                Config.labs[value].cookState = 3
+            else
+                return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
+            end
         end
-    elseif type == 'sudo' then
-        local items = ox_inventory:Search(src, 'count', {'acetone', 'fueldrugs', 'coughmeds'})
-        if (items and items.acetone >= 3 and items.fueldrugs >= 5 and items.coughmeds >= 10) or Config.ItemDebug and Config.labs[value].cookState == 1 then
-            Config.labs[value].cookState = 0
-            TriggerClientEvent("sharkmeth:cookAnim", src, value)
-            ox_inventory:RemoveItem(src, 'acetone', 3)
-            ox_inventory:RemoveItem(src, 'fueldrugs', 5)
-            ox_inventory:RemoveItem(src, 'coughmeds', 10)
-            Citizen.Wait(CookTime)
-            TriggerClientEvent('sharkmeth:notify', src, 'NotifCookSuc')
-            Config.labs[value].cookState = 2
-        else
-            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
-        end
-    elseif type == 'phos' then 
-        local items = ox_inventory:Search(src, 'count', {'fertilizer', 'antifreeze', 'sulph'})
-        if (items and items.fertilizer >= 5 and items.antifreeze >= 4 and items.sulph >= 1) or Config.ItemDebug and Config.labs[value].cookState == 1 then
-            Config.labs[value].cookState = 0
-            TriggerClientEvent("sharkmeth:cookAnim", src, value)
-            ox_inventory:RemoveItem(src, 'sulph', 1)
-            ox_inventory:RemoveItem(src, 'antifreeze', 4)
-            ox_inventory:RemoveItem(src, 'fertilizer', 5)
-            Citizen.Wait(CookTime)
-            TriggerClientEvent('sharkmeth:notify', src, 'NotifCookSuc')
-            ox_inventory:AddItem(src, 'empty_container', 1)
-            Config.labs[value].cookState = 3
-        else
-            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
-        end
+    else
+        return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
     end
 end)
-
 --collect meth
 RegisterServerEvent('sharkmeth:collect')
 AddEventHandler('sharkmeth:collect', function(value)
@@ -89,7 +104,7 @@ AddEventHandler('sharkmeth:collect', function(value)
             Config.labs[value].count = Config.labs[value].count + 1
         end
     else
-        return TriggerClientEvent('sharkmeth:notify', src, 'NotifCollectFai')
+        return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
     end
 end)
 
@@ -111,7 +126,7 @@ AddEventHandler('sharkmeth:smashServer', function(value)
         Citizen.Wait(14200)
         ox_inventory:AddItem(src, 'meth_brick', breakCount)
     else
-        TriggerClientEvent('sharkmeth:notify', src, 'NotifSmashFai')
+        return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifSmashFai[1], description = localSet.NotifSmashFai[2], type = localSet.NotifSmashFai[3]})        
     end
 end)
 ------------------------------------------------------------
@@ -123,45 +138,58 @@ AddEventHandler('sharkmeth:cheapCook', function(type)
     local CookTime = Config.CheapCookTime
     if type == 'sudo' then
         local items = ox_inventory:Search(src, 'count', {'acetone', 'water', 'coughmeds'})
-        if (items and items.acetone >= 3 and items.water >= 10 and items.coughmeds >= 25) or Config.ItemDebug then
+        if Config.cheapMeth.activeCook1 == false and (items and items.acetone >= 3 and items.water >= 10 and items.coughmeds >= 25) or Config.ItemDebug then
+            Config.cheapMeth.activeCook1 = true
+
             TriggerClientEvent('sharkmeth:cheapAnim', src, 'sudo')
             ox_inventory:RemoveItem(src, 'acetone', 3)
             ox_inventory:RemoveItem(src, 'water', 10)
             ox_inventory:RemoveItem(src, 'coughmeds', 25)
             Citizen.Wait(CookTime)
+
             ox_inventory:AddItem(src, 'sudo', Config.CookSudo)
+            Config.cheapMeth.activeCook1 = false
         else
-            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
+            return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
         end
     elseif type == 'meth' then
         local items = ox_inventory:Search(src, 'count', {'sudo', 'WEAPON_FLARE', 'iodine'})
-        if (items and items.sudo >= 1 and items.WEAPON_FLARE >= 5 and items.iodine >= 10) or Config.ItemDebug then
+        if Config.cheapMeth.activeCook2 == false and (items and items.sudo >= 1 and items.WEAPON_FLARE >= 5 and items.iodine >= 10) or Config.ItemDebug then
+            Config.cheapMeth.activeCook2 = true
+
             TriggerClientEvent('sharkmeth:cheapAnim', src, 'meth')
             ox_inventory:RemoveItem(src, 'sudo', 1)
             ox_inventory:RemoveItem(src, 'WEAPON_FLARE', 5)
             ox_inventory:RemoveItem(src, 'iodine', 10)
             Citizen.Wait(CookTime)
+
             ox_inventory:AddItem(src, 'meth_brick', Config.CheapReward)
+            Config.cheapMeth.activeCook2 = false
         else
-            return TriggerClientEvent('sharkmeth:notify', src, 'NotifCookFai')
+            return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
         end
     end
 end)
 ------------------------------------------------------------
 -- Gathering --
 ------------------------------------------------------------
+local activeSteal = false
 
 RegisterServerEvent('sharkmeth:stealSulph')
 AddEventHandler('sharkmeth:stealSulph', function()
     local src = source
     local items = ox_inventory:Search(src, 'count', 'empty_container')
-    if items >= 1 then
+    if items >= 1 and activeSteal == false then
+        activeSteal = true
+
         ox_inventory:RemoveItem(src, 'empty_container', 1)
         TriggerClientEvent('sharkmeth:stealAcid', src)
         Citizen.Wait(10000)
+
         ox_inventory:AddItem(src, 'sulph', 1)
+        activeSteal = false
     else
-        TriggerClientEvent('sharkmeth:notify', src, 'NotifStealFai')
+        return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifStealFai[1], description = localSet.NotifStealFai[2], type = localSet.NotifStealFai[3]})
     end
 end)
 
