@@ -48,14 +48,14 @@ AddEventHandler('sharkmeth:cookLab', function(value, type)
                 return TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookFai[1], description = localSet.NotifCookFai[2], type = localSet.NotifCookFai[3]})
             end
         elseif type == 'sudo' then
-            local items = ox_inventory:Search(src, 'count', {'acetone', 'fueldrugs', 'coughmeds'})
-            if (items and items.acetone >= 3 and items.fueldrugs >= 5 and items.coughmeds >= 10) or Config.ItemDebug then
+            local items = ox_inventory:Search(src, 'count', {'acetone', 'WEAPON_PETROLCAN', 'coughmeds'})
+            if (items and items.acetone >= 3 and items.WEAPON_PETROLCAN >= 1 and items.coughmeds >= 10) or Config.ItemDebug then
                 Config.labs[value].cookState = 0
                 Config.labs[value].activeCook = true
 
                 TriggerClientEvent("sharkmeth:cookAnim", src, value)
                 ox_inventory:RemoveItem(src, 'acetone', 3)
-                ox_inventory:RemoveItem(src, 'fueldrugs', 5)
+                ox_inventory:RemoveItem(src, 'WEAPON_PETROLCAN', 1)
                 ox_inventory:RemoveItem(src, 'coughmeds', 10)
                 Citizen.Wait(CookTime)
                 TriggerClientEvent('ox_lib:notify', src, {title = localSet.NotifCookSuc[1], description = localSet.NotifCookSuc[2], type = localSet.NotifCookSuc[3]})

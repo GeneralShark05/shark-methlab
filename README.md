@@ -16,25 +16,99 @@ An advanced meth-making script based on real life methods!
 3. Start shark-methlab
 
 ## Items Needed:
-### id - Name
-* acetone - Acetone/Nail Polish Remover
-* antifreeze - Antifreeze
-* coughmeds - Cough Medication
-* empty_container - Empty Container
-* fertilizer - Fertilizer
-* fueldrugs - Leaded Gasoline
-* iodine - Bottle of Iodine/Iodine Tablets
-* meth_brick - Bag of Meth/Brick of Meth
-* meth_pure - Meth Tray
-* phos - Phosphuric Acid
-* plasticwrap - Plastic Wrap
-* sulph - Sulphuric Acid
-* sudo - Pseudoephedrine
+['meth_pure'] = {
+    label = 'Tray of Pure Meth',
+    weight = 750,
+    description = 'One tray of Pure Meth'
+},
+
+['meth_brick'] = {
+    label = 'Bag of Meth',
+    weight = 500,
+    close = true,
+    description = 'One pound bag of Meth',
+},
+
+['coughmeds'] = {
+    label = 'Cough Medicine',
+    weight = 200,
+    description = 'A box of high strength cough-medicine.',
+    client = {
+        anim = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+        prop = { model = "prop_cs_pills", pos = vec3(0.03, 0.0, 0.02), rot = vec3(0.0, -13.5, -1.5) },
+        usetime = 2500,
+        status = { thirst = 10000, drunk = 100000  },
+    }
+},
+
+['empty_container'] = {
+    label = 'Empty Container',
+    weight = 500,
+    description = 'HDPE Plastic Container',
+    stack = true,
+},
+
+['plasticwrap'] = {
+    label = 'Plastic Wrap',
+    weight = 500
+},
+
+['fertilizer'] = {
+    label = 'Bag of Fertilizer',
+    weight = 5000,
+    description = 'Dontcha just love the smell?'
+},
+
+['acetone'] = {
+    label = 'Bottle of Acetone',
+    weight = 1000,
+    description = 'Great for stains!'
+},
+
+['sudo'] = {
+    label = 'Container of Pseudoepherine',
+    weight = 2500,
+    stack = true,
+    description = 'Homemade goodness!'
+},
+
+['antifreeze'] = {
+    label = 'Bottle of Antifreeze',
+    weight = 2000,
+    description = 'Great for those harsh San Andreas winters!'
+},
+
+['sulph'] = {
+    label = 'Container of Sulpuric Acid',
+    weight = 2500,
+    stack = true,
+    description = 'Not the best refreshment'
+},
+
+['empty_container'] = {
+    label = 'Empty Container',
+    weight = 500,
+    description = 'HDPE Plastic Container',
+    stack = false,
+},
+
+['phos'] = {
+    label = 'Container of Phosphorus',
+    weight = 2500,
+    stack = true,
+    description = 'The Red Menace is among us!'
+},
+
+['iodine'] = {
+		label = 'Bottle of Iodine',
+		weight = 500,
+		description = 'Medical Grade Iodine'
+},
 
 ## Making Meth
 Prep Lab First - Valid for 3 Extractions/Cooks
 - Pseudoephedrine
-Extract Sudo with Cough Meds, Acetone, and Leaded Gasoline
+Extract Sudo with Cough Meds, Acetone, and Gasoline
 - Phosphuric Acid
 Steal Sulphuric Acid from the Power Station
 Extract Phosphuric Acid with Sulphuric Acid, Fertilizer, and Antifreeze
